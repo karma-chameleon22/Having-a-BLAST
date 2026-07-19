@@ -21,7 +21,7 @@
 <h1>BLAST Prompt Generator</h1>
 
 <p class="subtitle">
-Generate custom BLAST commands with automated output formatting
+Generate customized BLAST commands with automatic output formatting
 </p>
 
 
@@ -30,7 +30,6 @@ Generate custom BLAST commands with automated output formatting
 <div class="section">
 
 <h2>BLAST Program</h2>
-
 
 <select id="blastType">
 
@@ -50,33 +49,30 @@ Generate custom BLAST commands with automated output formatting
 
 
 
-
 <div class="section">
 
+<h2>Query File</h2>
 
-<h2>Query Files</h2>
 
-
-<button onclick="setMultiple(false)">
+<button id="singleButton">
 Single FASTA File
 </button>
 
 
-<button onclick="setMultiple(true)">
+<button id="multipleButton">
 Multiple FASTA Files
 </button>
 
 
 <p id="fileMode">
-No selection
+Select query type
 </p>
 
 
 
 <label>
-Query FASTA Path
+Query Path
 </label>
-
 
 <input id="queryPath"
 placeholder="C:\Queries\query.fasta">
@@ -89,35 +85,32 @@ placeholder="C:\Queries\query.fasta">
 
 
 
-
-
 <div class="section">
-
 
 <h2>Database</h2>
 
 
 <label>
-BLAST Database Path
+Database Path
 </label>
 
 
 <input id="dbPath"
-placeholder="C:\Database\my_database">
+placeholder="C:\Database\myDB">
 
 
-<button onclick="setDB(true)">
-Existing Database
+<button id="existingDB">
+Existing BLAST Database
 </button>
 
 
-<button onclick="setDB(false)">
-Create Database
+<button id="createDB">
+Create BLAST Database
 </button>
 
 
 <p id="dbMessage">
-No selection
+Select database option
 </p>
 
 
@@ -129,11 +122,9 @@ No selection
 
 
 
-
 <div class="section">
 
-
-<h2>BLAST Parameters</h2>
+<h2>Parameters</h2>
 
 
 <label>
@@ -173,53 +164,120 @@ Threads
 
 
 
-
 <div class="section">
 
-
-<h2>Output Columns</h2>
+<h2>BLAST Output Columns</h2>
 
 
 <div class="checkbox-grid">
 
 
-<label><input type="checkbox" value="qseqid" checked> Query ID</label>
+<label>
+<input type="checkbox" value="qseqid" checked>
+qseqid
+</label>
 
-<label><input type="checkbox" value="sseqid" checked> Subject ID</label>
 
-<label><input type="checkbox" value="pident" checked> Percent Identity</label>
+<label>
+<input type="checkbox" value="sseqid" checked>
+sseqid
+</label>
 
-<label><input type="checkbox" value="length" checked> Alignment Length</label>
 
-<label><input type="checkbox" value="mismatch"> Mismatches</label>
+<label>
+<input type="checkbox" value="pident" checked>
+pident
+</label>
 
-<label><input type="checkbox" value="gapopen"> Gap Opens</label>
 
-<label><input type="checkbox" value="qstart"> Query Start</label>
+<label>
+<input type="checkbox" value="length" checked>
+length
+</label>
 
-<label><input type="checkbox" value="qend"> Query End</label>
 
-<label><input type="checkbox" value="sstart"> Subject Start</label>
+<label>
+<input type="checkbox" value="mismatch">
+mismatch
+</label>
 
-<label><input type="checkbox" value="send"> Subject End</label>
 
-<label><input type="checkbox" value="evalue" checked> E-value</label>
+<label>
+<input type="checkbox" value="gapopen">
+gapopen
+</label>
 
-<label><input type="checkbox" value="bitscore" checked> Bit Score</label>
 
-<label><input type="checkbox" value="qseq"> Query Sequence</label>
+<label>
+<input type="checkbox" value="qstart">
+qstart
+</label>
 
-<label><input type="checkbox" value="sseq"> Subject Sequence</label>
 
-<label><input type="checkbox" value="qlen"> Query Length</label>
+<label>
+<input type="checkbox" value="qend">
+qend
+</label>
 
-<label><input type="checkbox" value="slen"> Subject Length</label>
 
-<label><input type="checkbox" value="qcovhsp"> Query Coverage</label>
+<label>
+<input type="checkbox" value="sstart">
+sstart
+</label>
 
-<label><input type="checkbox" value="frames"> Frames</label>
 
-<label><input type="checkbox" value="staxids"> Taxonomy ID</label>
+<label>
+<input type="checkbox" value="send">
+send
+</label>
+
+
+<label>
+<input type="checkbox" value="evalue" checked>
+evalue
+</label>
+
+
+<label>
+<input type="checkbox" value="bitscore" checked>
+bitscore
+</label>
+
+
+<label>
+<input type="checkbox" value="qseq">
+Query Sequence
+</label>
+
+
+<label>
+<input type="checkbox" value="sseq">
+Subject Sequence
+</label>
+
+
+<label>
+<input type="checkbox" value="qlen">
+Query Length
+</label>
+
+
+<label>
+<input type="checkbox" value="slen">
+Subject Length
+</label>
+
+
+<label>
+<input type="checkbox" value="qcovhsp">
+Query Coverage
+</label>
+
+
+<label>
+<input type="checkbox" value="frames">
+Frames
+</label>
 
 
 </div>
@@ -242,11 +300,20 @@ Threads
 
 <select id="outputType">
 
-<option value="tsv">TSV</option>
+<option value="tsv">
+TSV
+</option>
 
-<option value="csv">CSV</option>
 
-<option value="txt">TXT</option>
+<option value="csv">
+CSV
+</option>
+
+
+<option value="txt">
+TXT
+</option>
+
 
 </select>
 
@@ -270,12 +337,12 @@ value="blast_results">
 
 
 
-
 <div class="section">
 
 
-<button class="generateButton"
-onclick="generate()">
+<button 
+id="generateButton"
+class="generateButton">
 
 Generate BLAST Command
 
@@ -284,7 +351,7 @@ Generate BLAST Command
 
 
 <textarea id="result"
-placeholder="Generated command will appear here">
+placeholder="BLAST command will appear here">
 
 </textarea>
 
@@ -294,10 +361,12 @@ placeholder="Generated command will appear here">
 
 
 
+
 </div>
 
 
-<script src="script.js"></script>
+
+<script src="script.js" defer></script>
 
 
 </body>
