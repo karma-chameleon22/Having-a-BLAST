@@ -5,8 +5,6 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>BLAST Prompt Generator</title>
 
 <link rel="stylesheet" href="style.css">
@@ -22,80 +20,25 @@
 
 <h1>BLAST Prompt Generator</h1>
 
-
 <p class="subtitle">
-Create customized BLAST commands with automated output formatting
+Generate BLAST commands automatically
 </p>
 
 
-
-
-
-<!-- HELP SECTION -->
-
-
-<div class="help-section">
 
 
 <button id="helpButton">
-
 Collapse Instructions
-
 </button>
 
 
-
-<div id="helpContent" style="display:block;">
-
-<h2>What is BLAST?</h2>
+<div id="helpContent">
 
 
-<p>
-BLAST (Basic Local Alignment Search Tool) compares biological sequences
-against a database to identify similarities between DNA, RNA, or protein
-sequences.
-</p>
-
-
-<h3>Common BLAST Programs</h3>
-
-
-<ul>
-
-<li>
-<b>blastn</b> - nucleotide sequence against nucleotide database
-</li>
-
-
-<li>
-<b>blastn-short</b> - short nucleotide sequences such as tRFs or miRNAs
-</li>
-
-
-<li>
-<b>blastp</b> - protein sequence comparisons
-</li>
-
-
-<li>
-<b>blastx</b> - translated nucleotide query against protein database
-</li>
-
-
-<li>
-<b>tblastn</b> - protein query against translated nucleotide database
-</li>
-
-
-</ul>
-
-
-
-<h3>Before Running BLAST</h3>
-
+<h2>How to Run BLAST</h2>
 
 <p>
-Install NCBI BLAST+ and verify installation:
+Install NCBI BLAST+ first and verify:
 </p>
 
 
@@ -104,85 +47,51 @@ blastn -version
 </pre>
 
 
-<h3>Create a BLAST Database</h3>
+<p>
+Create a database:
+</p>
 
 
 <pre>
 makeblastdb \
--in sequences.fasta \
+-in genome.fasta \
 -dbtype nucl \
--out database_name
+-out genome_DB
 </pre>
 
 
-<h3>Run the Generated Command</h3>
-
-
 <p>
-Copy the command generated below and paste it into your terminal.
+Copy the generated command into your terminal.
 </p>
 
 
 </div>
 
 
-</div>
 
 
 
-
-
-
-
-
-
-
-<!-- BLAST TYPE -->
 
 
 <div class="section">
 
 
-<h2>1. Select BLAST Program</h2>
-
-
-<p>
-Choose the alignment method appropriate for your sequence type.
-</p>
+<h2>BLAST Type</h2>
 
 
 <select id="blastType">
 
-
 <option value="blastn">
-blastn - nucleotide vs nucleotide
+blastn
 </option>
-
 
 <option value="blastn-short">
-blastn-short - short nucleotide sequences
+blastn-short
 </option>
-
 
 <option value="blastp">
-blastp - protein vs protein
+blastp
 </option>
-
-
-<option value="blastx">
-blastx - translated nucleotide query
-</option>
-
-
-<option value="tblastn">
-tblastn - protein vs translated nucleotide
-</option>
-
-
-<option value="tblastx">
-tblastx - translated nucleotide vs translated nucleotide
-</option>
-
 
 </select>
 
@@ -197,56 +106,30 @@ tblastx - translated nucleotide vs translated nucleotide
 
 
 
-<!-- QUERY -->
-
-
 <div class="section">
 
 
-<h2>2. Query FASTA File</h2>
-
-
-<p>
-The query is the sequence you want to search against your database.
-</p>
-
+<h2>Query Files</h2>
 
 
 <button id="singleButton">
-
-Single FASTA File
-
+Single FASTA
 </button>
-
 
 
 <button id="multipleButton">
-
-Multiple FASTA Files
-
+Multiple FASTA
 </button>
-
 
 
 <p id="fileMode">
-
-Select query mode
-
+Select mode
 </p>
 
 
 
-<label>
-
-Query FASTA Path
-
-</label>
-
-
-<input 
-id="queryPath"
-placeholder="Example: C:\Queries\tRFs.fasta">
-
+<input id="queryPath"
+placeholder="Query FASTA path">
 
 
 </div>
@@ -259,56 +142,29 @@ placeholder="Example: C:\Queries\tRFs.fasta">
 
 
 
-<!-- DATABASE -->
-
-
 <div class="section">
 
 
-<h2>3. BLAST Database</h2>
+<h2>Database</h2>
 
 
-<p>
-The database contains sequences that BLAST will search against.
-</p>
-
-
-
-<label>
-
-Database Path
-
-</label>
-
-
-<input 
-id="dbPath"
-placeholder="Example: C:\Databases\tRNA_DB">
-
+<input id="dbPath"
+placeholder="BLAST database path">
 
 
 <button id="existingDB">
-
-Existing BLAST Database
-
+Existing Database
 </button>
-
 
 
 <button id="createDB">
-
-Create BLAST Database
-
+Create Database
 </button>
 
 
-
 <p id="dbMessage">
-
 Select database option
-
 </p>
-
 
 
 </div>
@@ -321,64 +177,19 @@ Select database option
 
 
 
-<!-- PARAMETERS -->
-
-
 <div class="section">
 
 
-<h2>4. BLAST Parameters</h2>
-
-
-
-<p>
-Adjust search sensitivity and computational settings.
-</p>
-
-
-
-<label>
-
-E-value
-
-</label>
+<h2>Parameters</h2>
 
 
 <input id="evalue" value="1e-7">
 
-
-
-<label>
-
-Word Size
-
-</label>
-
-
 <input id="wordsize" value="7">
-
-
-
-<label>
-
-Percent Identity
-
-</label>
-
 
 <input id="identity" value="100">
 
-
-
-<label>
-
-CPU Threads
-
-</label>
-
-
 <input id="threads" value="8">
-
 
 
 </div>
@@ -390,20 +201,10 @@ CPU Threads
 
 
 
-
-<!-- OUTPUT -->
-
-
 <div class="section">
 
 
-<h2>5. BLAST Output Columns</h2>
-
-
-<p>
-Select which information BLAST should include in the results file.
-</p>
-
+<h2>Output Columns</h2>
 
 
 <div class="checkbox-grid">
@@ -411,109 +212,85 @@ Select which information BLAST should include in the results file.
 
 <label>
 <input type="checkbox" value="qseqid" checked>
-Query ID
+qseqid
 </label>
 
 
 <label>
 <input type="checkbox" value="sseqid" checked>
-Subject ID
+sseqid
 </label>
 
 
 <label>
 <input type="checkbox" value="pident" checked>
-Percent Identity
+pident
 </label>
 
 
 <label>
 <input type="checkbox" value="length" checked>
-Alignment Length
+length
 </label>
 
 
 <label>
 <input type="checkbox" value="mismatch">
-Mismatches
+mismatch
 </label>
 
 
 <label>
 <input type="checkbox" value="gapopen">
-Gap Opens
+gapopen
 </label>
 
 
 <label>
 <input type="checkbox" value="qstart">
-Query Start
+qstart
 </label>
 
 
 <label>
 <input type="checkbox" value="qend">
-Query End
+qend
 </label>
 
 
 <label>
 <input type="checkbox" value="sstart">
-Subject Start
+sstart
 </label>
 
 
 <label>
 <input type="checkbox" value="send">
-Subject End
+send
 </label>
 
 
 <label>
 <input type="checkbox" value="evalue" checked>
-E-value
+evalue
 </label>
 
 
 <label>
 <input type="checkbox" value="bitscore" checked>
-Bit Score
+bitscore
 </label>
 
 
 <label>
 <input type="checkbox" value="qseq">
-Query Sequence
+qseq
 </label>
 
 
 <label>
 <input type="checkbox" value="sseq">
-Subject Sequence
-</label>
-
-
-<label>
-<input type="checkbox" value="qlen">
-Query Length
-</label>
-
-
-<label>
-<input type="checkbox" value="slen">
-Subject Length
-</label>
-
-
-<label>
-<input type="checkbox" value="qcovhsp">
-Query Coverage
-</label>
-
-
-<label>
-<input type="checkbox" value="frames">
-Frames
+sseq
 </label>
 
 
@@ -528,83 +305,34 @@ Frames
 
 
 
-
-
-<!-- FILE TYPE -->
 
 
 <div class="section">
 
 
-<h2>6. Output File</h2>
-
-
-<label>
-
-Output Format
-
-</label>
+<h2>Output</h2>
 
 
 <select id="outputType">
 
-
 <option value="tsv">
-TSV (Tab Delimited)
+TSV
 </option>
-
 
 <option value="csv">
 CSV
 </option>
 
-
-<option value="txt">
-TXT
-</option>
-
-
 </select>
 
 
 
-
-<label>
-
-File Name
-
-</label>
-
-
-<input 
-id="outputName"
+<input id="outputName"
 value="blast_results">
 
 
 
-</div>
-
-
-
-
-
-
-
-
-
-<!-- GENERATE -->
-
-
-<div class="section">
-
-
-<h2>7. Generate Command</h2>
-
-
-
-<button 
-id="generateButton"
-class="generateButton">
+<button id="generateButton">
 
 Generate BLAST Command
 
@@ -612,12 +340,7 @@ Generate BLAST Command
 
 
 
-
-<textarea 
-id="result"
-placeholder="Your BLAST command will appear here">
-
-</textarea>
+<textarea id="result"></textarea>
 
 
 </div>
@@ -626,11 +349,12 @@ placeholder="Your BLAST command will appear here">
 
 
 
+
+
 </div>
 
 
-
-<script src="script.js" defer></script>
+<script src="script.js"></script>
 
 
 </body>
