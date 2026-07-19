@@ -1,18 +1,14 @@
-let databaseMade = true;
-let multiple = false;
+let multiple=false;
+
+let databaseMade=true;
 
 
 
-function cleanPath(path){
-
-    if(!path){
-        return "";
-    }
-
+function clean(path){
 
     return path
-        .trim()
-        .replace(/^"+|"+$/g,"");
+    .trim()
+    .replace(/^"+|"+$/g,"");
 
 }
 
@@ -20,7 +16,19 @@ function cleanPath(path){
 
 function quote(path){
 
-    return `"${cleanPath(path)}"`;
+    return `"${clean(path)}"`;
+
+}
+
+
+
+function dbName(path){
+
+    path=clean(path);
+
+    path=path.replace(/\.fasta$/i,"");
+
+    return path;
 
 }
 
@@ -28,145 +36,131 @@ function quote(path){
 
 
 
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
-document.addEventListener("DOMContentLoaded", function(){
 
+document
+.getElementById("helpButton")
+.onclick=function(){
 
 
-    // Query mode
+let box=
+document.getElementById("helpContent");
 
-    document.getElementById("singleButton").onclick=function(){
 
-        multiple=false;
+if(box.style.display==="none"){
 
-        document.getElementById("fileMode").innerHTML =
-        "Single FASTA file selected";
 
-    };
+box.style.display="block";
 
 
+this.innerHTML=
+"Collapse Instructions";
 
 
-    document.getElementById("multipleButton").onclick=function(){
+}
 
-        multiple=true;
+else{
 
-        document.getElementById("fileMode").innerHTML =
-        "Multiple FASTA files selected";
 
-    };
+box.style.display="none";
 
 
+this.innerHTML=
+"How to Run BLAST";
 
 
+}
 
 
-    // Database selection
+};
 
 
-    document.getElementById("existingDB").onclick=function(){
 
-        databaseMade=true;
 
-        document.getElementById("dbMessage").innerHTML =
-        "Using existing BLAST database";
 
-    };
 
+document
+.getElementById("singleButton")
+.onclick=function(){
 
+multiple=false;
 
+document
+.getElementById("fileMode")
+.innerHTML=
+"Single FASTA mode";
 
+};
 
-    document.getElementById("createDB").onclick=function(){
 
-        databaseMade=false;
 
-        document.getElementById("dbMessage").innerHTML =
-        "makeblastdb command will be generated";
 
-    };
 
 
 
+document
+.getElementById("multipleButton")
+.onclick=function(){
 
+multiple=true;
 
+document
+.getElementById("fileMode")
+.innerHTML=
+"Multiple FASTA mode";
 
+};
 
-    // Collapse instructions
 
 
-    const helpButton =
-    document.getElementById("helpButton");
 
 
-    const helpContent =
-    document.getElementById("helpContent");
 
+document
+.getElementById("existingDB")
+.onclick=function(){
 
+databaseMade=true;
 
-    if(helpButton && helpContent){
+document
+.getElementById("dbMessage")
+.innerHTML=
+"Existing database selected";
 
+};
 
 
-        // Start expanded
 
-        helpContent.style.display="block";
 
-        helpButton.innerHTML =
-        "Collapse Instructions";
 
 
 
+document
+.getElementById("createDB")
+.onclick=function(){
 
-        helpButton.onclick=function(){
+databaseMade=false;
 
+document
+.getElementById("dbMessage")
+.innerHTML=
+"Database will be created";
 
+};
 
-            if(helpContent.style.display==="none"){
 
 
-                helpContent.style.display="block";
 
 
-                helpButton.innerHTML =
-                "Collapse Instructions";
 
 
-            }
-
-            else{
-
-
-                helpContent.style.display="none";
-
-
-                helpButton.innerHTML =
-                "How to Run BLAST on Your Computer";
-
-
-            }
-
-
-        };
-
-
-    }
-
-
-
-
-
-
-
-    // Generate button
-
-
-    document.getElementById("generateButton").onclick=function(){
-
-        generateBLAST();
-
-    };
-
+document
+.getElementById("generateButton")
+.onclick=
+generate;
 
 
 });
@@ -178,58 +172,55 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-
-function generateBLAST(){
-
+function generate(){
 
 
-let blast =
+
+let blast=
 document.getElementById("blastType").value;
 
 
 
-
-let query =
-cleanPath(
+let query=
+clean(
 document.getElementById("queryPath").value
 );
 
 
 
-let db =
-cleanPath(
+let database=
+dbName(
 document.getElementById("dbPath").value
 );
 
 
 
-
-let evalue =
+let evalue=
 document.getElementById("evalue").value;
 
 
 
-let word =
+let word=
 document.getElementById("wordsize").value;
 
 
 
-let identity =
+let identity=
 document.getElementById("identity").value;
 
 
 
-let threads =
+let threads=
 document.getElementById("threads").value;
 
 
 
-let output =
+let output=
 document.getElementById("outputName").value;
 
 
 
-let extension =
+let ext=
 document.getElementById("outputType").value;
 
 
@@ -240,28 +231,14 @@ document.getElementById("outputType").value;
 let fields=[];
 
 
-
 document
-.querySelectorAll(".checkbox-grid input:checked")
-.forEach(function(box){
+.querySelectorAll(
+".checkbox-grid input:checked"
+)
+.forEach(x=>
+fields.push(x.value)
+);
 
-    fields.push(box.value);
-
-});
-
-
-
-
-
-
-let outfmt="6";
-
-
-if(extension==="csv"){
-
-    outfmt="10";
-
-}
 
 
 
@@ -273,20 +250,15 @@ let command="";
 
 
 
+if(!databaseMade){
 
 
-// MAKEBLASTDB
-
-if(databaseMade===false){
-
-
-    command +=
+command+=
 
 `makeblastdb \\
--in ${quote(query)} \\
+-in ${quote(database+".fasta")} \\
 -dbtype nucl \\
--out ${quote(db)}
-
+-out ${quote(database)}
 
 \n\n`;
 
@@ -296,21 +268,17 @@ if(databaseMade===false){
 
 
 
-
-
-// MULTIPLE FASTA
-
 if(multiple){
 
 
-command +=
+command+=
 
 `for file in *.fasta; do
     ${blast} \\
     -query "$file" \\
-    -db ${quote(db)} \\
-    -out "\${file%.fasta}_blast.${extension}" \\
-    -outfmt "${outfmt} ${fields.join(" ")}" \\
+    -db ${quote(database)} \\
+    -out "\${file%.fasta}_blast.${ext}" \\
+    -outfmt "6 ${fields.join(" ")}" \\
     -word_size ${word} \\
     -perc_identity ${identity} \\
     -evalue ${evalue} \\
@@ -321,38 +289,28 @@ done`;
 
 }
 
-
-
-
-
-
-
-// SINGLE FASTA
-
 else{
 
 
-command +=
+command+=
 
 `${blast} \\
 -query ${quote(query)} \\
--db ${quote(db)} \\
--out "${output}.${extension}" \\
--outfmt "${outfmt} ${fields.join(" ")}" \\
+-db ${quote(database)} \\
+-out "${output}.${ext}" \\
+-outfmt "6 ${fields.join(" ")}" \\
 -word_size ${word} \\
 -perc_identity ${identity} \\
 -evalue ${evalue} \\
 -num_threads ${threads}`;
 
-
 }
 
 
 
-
-
-
-document.getElementById("result").value =
+document
+.getElementById("result")
+.value=
 command;
 
 
