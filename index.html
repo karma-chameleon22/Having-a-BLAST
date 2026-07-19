@@ -22,18 +22,15 @@
 <h1>BLAST Prompt Generator</h1>
 
 <p class="subtitle">
-Generate customized BLAST commands automatically
+Generate BLAST commands automatically
 </p>
 
 
 
-
-
-<!-- HELP -->
-
 <button id="helpButton">
 Collapse Instructions
 </button>
+
 
 
 <div id="helpContent">
@@ -41,14 +38,13 @@ Collapse Instructions
 
 <h2>How to Run BLAST</h2>
 
-
 <p>
-BLAST compares biological sequences against a database.
-Install NCBI BLAST+ before using generated commands.
+This tool generates commands for NCBI BLAST+.
+Install BLAST+ before running generated commands.
 </p>
 
 
-<h3>Check BLAST Installation</h3>
+<h3>Check Installation</h3>
 
 <pre>
 blastn -version
@@ -78,10 +74,6 @@ Copy the generated command into your terminal.
 
 
 
-
-<!-- BLAST TYPE -->
-
-
 <div class="section">
 
 <h2>BLAST Program</h2>
@@ -101,8 +93,8 @@ blastn-short
 blastp
 </option>
 
-</select>
 
+</select>
 
 </div>
 
@@ -110,11 +102,6 @@ blastp
 
 
 
-
-
-
-
-<!-- QUERY -->
 
 
 <div class="section">
@@ -134,17 +121,13 @@ Multiple FASTA
 
 
 <p id="fileMode">
-Select query type
+Select FASTA mode
 </p>
 
 
-<label>
-Query FASTA path
-</label>
-
 
 <input id="queryPath"
-placeholder='Example: D:\Queries\sample.fasta'>
+placeholder="Example: D:\Queries\sample.fasta">
 
 
 </div>
@@ -156,37 +139,35 @@ placeholder='Example: D:\Queries\sample.fasta'>
 
 
 
-
-<!-- DATABASE -->
-
-
 <div class="section">
 
 
 <h2>Database</h2>
 
 
-
 <label>
 Database FASTA file
 <br>
-(Only needed if creating a database)
+(Only needed when creating a database)
 </label>
 
 
 <input id="databaseFastaPath"
-placeholder='Example: D:\DB\genome.fasta'>
+placeholder="Example: D:\DB\genome.fasta">
+
 
 
 
 
 <label>
-BLAST database name/path
+BLAST Database Name/Path
 </label>
 
 
 <input id="databasePath"
-placeholder='Example: D:\DB\genome_DB'>
+placeholder="Example: D:\DB\genome_DB">
+
+
 
 
 
@@ -195,10 +176,10 @@ Use Existing Database
 </button>
 
 
+
 <button id="createDB">
 Create Database
 </button>
-
 
 
 <p id="dbMessage">
@@ -216,20 +197,42 @@ Select database option
 
 
 
-<!-- PARAMETERS -->
-
-
 <div class="section">
 
 
 <h2>BLAST Parameters</h2>
 
 
+
 <label>
-E-value
+E-value (Expectation Value)
 </label>
 
+
+<div class="parameter-description">
+
+Controls how likely a match occurred by chance.
+
+<br><br>
+
+Lower values = stricter searches.
+
+<br><br>
+
+Examples:
+<br>
+1e-3 → relaxed
+<br>
+1e-7 → common high confidence search
+<br>
+1e-20 → very strict
+
+</div>
+
+
 <input id="evalue" value="1e-7">
+
+
 
 
 
@@ -237,7 +240,30 @@ E-value
 Word Size
 </label>
 
+
+<div class="parameter-description">
+
+Controls the initial matching sequence length.
+
+<br><br>
+
+Smaller values:
+<br>
+• More sensitive
+<br>
+• Better for short sequences
+
+<br><br>
+
+Common short sequence values:
+<strong>7-11</strong>
+
+</div>
+
+
 <input id="wordsize" value="7">
+
+
 
 
 
@@ -245,13 +271,42 @@ Word Size
 Percent Identity
 </label>
 
+
+<div class="parameter-description">
+
+Controls how similar sequences must be.
+
+<br><br>
+
+100 = exact matches only
+
+<br>
+95 = allows small differences
+
+</div>
+
+
 <input id="identity" value="100">
 
 
 
+
+
 <label>
-Threads
+CPU Threads
 </label>
+
+
+<div class="parameter-description">
+
+Controls how many processor cores BLAST uses.
+
+<br><br>
+
+More threads usually speed up searches.
+
+</div>
+
 
 <input id="threads" value="8">
 
@@ -267,13 +322,10 @@ Threads
 
 
 
-<!-- OUTPUT -->
-
-
 <div class="section">
 
 
-<h2>BLAST Output Fields</h2>
+<h2>BLAST Output Columns</h2>
 
 
 <div class="checkbox-grid">
@@ -375,11 +427,10 @@ sseq
 
 
 
-
 <div class="section">
 
 
-<h2>Generate Command</h2>
+<h2>Output</h2>
 
 
 <select id="outputType">
@@ -387,6 +438,7 @@ sseq
 <option value="tsv">
 TSV
 </option>
+
 
 <option value="csv">
 CSV
@@ -396,16 +448,16 @@ CSV
 </select>
 
 
+
 <input id="outputName"
 value="blast_results">
 
 
 
 <button id="generateButton">
-
 Generate BLAST Command
-
 </button>
+
 
 
 
@@ -419,12 +471,11 @@ Generate BLAST Command
 
 
 
-
 </div>
 
 
-
 <script src="script.js"></script>
+
 
 </body>
 
