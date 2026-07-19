@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>BLAST Prompt Generator</title>
 
@@ -16,33 +20,66 @@
 <div class="container">
 
 
+<header>
+
 <h1>
 🧬 BLAST Prompt Generator
 </h1>
 
+<p class="subtitle">
+Build customized BLAST commands without memorizing parameters
+</p>
+
+</header>
+
+
+
+
+
+<!-- BLAST TYPE -->
 
 <div class="section">
 
 
-<h2>BLAST Type</h2>
+<h2>① Select BLAST Program</h2>
 
 
-<label>Select BLAST Program:</label>
+<label for="blastType">
+BLAST Algorithm:
+</label>
 
 
 <select id="blastType">
 
-<option value="blastn">blastn</option>
 
-<option value="blastn-short">blastn-short</option>
+<option value="blastn">
+blastn — nucleotide vs nucleotide
+</option>
 
-<option value="blastp">blastp</option>
 
-<option value="blastx">blastx</option>
+<option value="blastn-short">
+blastn-short — short sequences (tRFs, miRNAs)
+</option>
 
-<option value="tblastn">tblastn</option>
 
-<option value="tblastx">tblastx</option>
+<option value="blastp">
+blastp — protein vs protein
+</option>
+
+
+<option value="blastx">
+blastx — translated nucleotide query
+</option>
+
+
+<option value="tblastn">
+tblastn — protein query vs translated nucleotide DB
+</option>
+
+
+<option value="tblastx">
+tblastx — translated nucleotide vs translated nucleotide
+</option>
 
 
 </select>
@@ -52,35 +89,60 @@
 
 
 
+
+
+
+
+<!-- QUERY FILE -->
+
 <div class="section">
 
 
-<h2>Query Files</h2>
+<h2>② Query FASTA Files</h2>
+
+
+<p>
+Choose whether you are searching one sequence file or many.
+</p>
+
+
+
+<div class="button-group">
 
 
 <button onclick="setMultiple(false)">
-Single FASTA File
+📄 Single FASTA File
 </button>
 
 
 <button onclick="setMultiple(true)">
-Multiple FASTA Files
+📚 Multiple FASTA Files
 </button>
 
 
-<div id="fileMode">
-Select query type
 </div>
 
 
 
-<label>
+<div id="fileMode">
+
+Waiting for selection...
+
+</div>
+
+
+
+
+<label for="queryPath">
+
 Query FASTA Path:
+
 </label>
 
 
 <input 
 id="queryPath"
+type="text"
 placeholder="Example: D:\Queries\tRFs.fasta">
 
 
@@ -90,37 +152,60 @@ placeholder="Example: D:\Queries\tRFs.fasta">
 
 
 
+
+
+
+<!-- DATABASE -->
+
 <div class="section">
 
 
-<h2>BLAST Database</h2>
+<h2>③ BLAST Database</h2>
 
 
-<label>
-Database Path:
+<label for="dbPath">
+
+Database Location:
+
 </label>
 
 
-<input 
+<input
+
 id="dbPath"
+
+type="text"
+
 placeholder="Example: D:\Databases\tRNA_DB">
 
 
+<p>
+Do you already have a formatted BLAST database?
+</p>
+
+
+
+<div class="button-group">
+
 
 <button onclick="setDB(true)">
-✓ Existing BLAST DB
+🗄 Existing BLAST DB
 </button>
-
 
 
 <button onclick="setDB(false)">
-＋ Create BLAST DB
+⚙ Create New BLAST DB
 </button>
+
+
+</div>
 
 
 
 <div id="dbMessage">
-Select database status
+
+Waiting for selection...
+
 </div>
 
 
@@ -129,61 +214,82 @@ Select database status
 
 
 
+
+
+
+
+<!-- PARAMETERS -->
 
 <div class="section">
 
 
-<h2>BLAST Parameters</h2>
+<h2>④ BLAST Parameters</h2>
 
+
+
+<div class="parameter-grid">
+
+
+
+<div>
 
 <label>
-E-value:
+E-value
 </label>
 
 <input 
 id="evalue"
 value="1e-7">
 
+</div>
 
+
+
+
+
+<div>
 
 <label>
-Word Size:
+Word Size
 </label>
 
 <input 
 id="wordsize"
 value="7">
 
+</div>
 
+
+
+
+
+<div>
 
 <label>
-Percent Identity:
+Percent Identity
 </label>
 
 <input 
 id="identity"
 value="100">
 
+</div>
 
+
+
+
+
+<div>
 
 <label>
-Number of Threads:
+Threads
 </label>
 
 <input 
 id="threads"
 value="8">
 
-
-
-<label>
-Output File:
-</label>
-
-
-<input
-id="output"
-value="blast_results.tsv">
+</div>
 
 
 
@@ -194,31 +300,89 @@ value="blast_results.tsv">
 
 
 
+<label>
+
+Output File:
+
+</label>
+
+
+<input
+
+id="output"
+
+value="blast_results.tsv">
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- GENERATE -->
+
 <div class="section generate">
+
+
+<h2>
+⑤ Generate Command
+</h2>
+
 
 
 <button 
 class="generateButton"
 onclick="generate()">
 
-🧬 Generate BLAST Command
+🚀 Generate BLAST Command
 
 </button>
 
 
-<h2>
-Generated Command
-</h2>
 
 
-<textarea id="result"></textarea>
+<label>
+
+Your BLAST Command:
+
+</label>
+
+
+
+<textarea 
+id="result"
+placeholder="Your command will appear here...">
+
+</textarea>
+
 
 
 </div>
 
 
 
+
+
+
+
+<footer>
+
+<p>
+Bioinformatics Utility Tool • BLAST Command Builder
+</p>
+
+</footer>
+
+
+
+
 </div>
+
 
 
 <script src="script.js"></script>
