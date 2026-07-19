@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BLAST Prompt Generator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>BLAST Prompt Generator</h1>
+
+<label>Choose BLAST Type:</label>
+
+<select id="blastType">
+<option value="blastn">blastn</option>
+<option value="blastn-short">blastn-short</option>
+<option value="blastp">blastp</option>
+<option value="blastx">blastx</option>
+<option value="tblastn">tblastn</option>
+<option value="tblastx">tblastx</option>
+</select>
+
+
+<h2>Query Files</h2>
+
+<button onclick="setMultiple(false)">
+Single FASTA File
+</button>
+
+<button onclick="setMultiple(true)">
+Multiple FASTA Files
+</button>
+
+<p id="fileMode"></p>
+
+
+<label>
+Query FASTA Path:
+</label>
+
+<input id="queryPath"
+placeholder="Example: D:\Queries\tRFs.fasta">
+
+
+<label>
+BLAST Database Path:
+</label>
+
+<input id="dbPath"
+placeholder="Example: D:\DB\tRNA_DB">
+
+
+<h2>Database Status</h2>
+
+<button onclick="setDB(true)">
+I already made a BLAST DB
+</button>
+
+<button onclick="setDB(false)">
+I need to make a BLAST DB
+</button>
+
+
+<div id="dbMessage"></div>
+
+
+<h2>BLAST Options</h2>
+
+
+<label>
+E-value:
+</label>
+
+<input id="evalue" value="1e-7">
+
+
+<label>
+Word Size:
+</label>
+
+<input id="wordsize" value="7">
+
+
+<label>
+Percent Identity:
+</label>
+
+<input id="identity" value="100">
+
+
+<label>
+Threads:
+</label>
+
+<input id="threads" value="8">
+
+
+<label>
+Output:
+</label>
+
+<input id="output"
+value="blast_results.tsv">
+
+
+<button onclick="generate()">
+Generate Command
+</button>
+
+
+<h2>Generated Command</h2>
+
+<textarea id="result"></textarea>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
