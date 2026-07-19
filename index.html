@@ -5,8 +5,6 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>BLAST Prompt Generator</title>
 
 <link rel="stylesheet" href="style.css">
@@ -20,66 +18,33 @@
 <div class="container">
 
 
-<header>
-
-<h1>
-🧬 BLAST Prompt Generator
-</h1>
+<h1>BLAST Prompt Generator</h1>
 
 <p class="subtitle">
-Build customized BLAST commands without memorizing parameters
+Generate customized BLAST commands with automated output formatting
 </p>
 
-</header>
 
 
-
-
-
-<!-- BLAST TYPE -->
 
 <div class="section">
 
-
-<h2>① Select BLAST Program</h2>
-
-
-<label for="blastType">
-BLAST Algorithm:
-</label>
+<h2>1. BLAST Program</h2>
 
 
 <select id="blastType">
 
+<option value="blastn">blastn</option>
 
-<option value="blastn">
-blastn — nucleotide vs nucleotide
-</option>
+<option value="blastn-short">blastn-short</option>
 
+<option value="blastp">blastp</option>
 
-<option value="blastn-short">
-blastn-short — short sequences (tRFs, miRNAs)
-</option>
+<option value="blastx">blastx</option>
 
+<option value="tblastn">tblastn</option>
 
-<option value="blastp">
-blastp — protein vs protein
-</option>
-
-
-<option value="blastx">
-blastx — translated nucleotide query
-</option>
-
-
-<option value="tblastn">
-tblastn — protein query vs translated nucleotide DB
-</option>
-
-
-<option value="tblastx">
-tblastx — translated nucleotide vs translated nucleotide
-</option>
+<option value="tblastx">tblastx</option>
 
 
 </select>
@@ -92,121 +57,35 @@ tblastx — translated nucleotide vs translated nucleotide
 
 
 
-
-<!-- QUERY FILE -->
-
 <div class="section">
 
 
-<h2>② Query FASTA Files</h2>
-
-
-<p>
-Choose whether you are searching one sequence file or many.
-</p>
-
-
-
-<div class="button-group">
+<h2>2. Query Files</h2>
 
 
 <button onclick="setMultiple(false)">
-📄 Single FASTA File
+Single FASTA File
 </button>
 
 
 <button onclick="setMultiple(true)">
-📚 Multiple FASTA Files
+Multiple FASTA Files
 </button>
 
 
-</div>
-
-
-
-<div id="fileMode">
-
-Waiting for selection...
-
-</div>
-
-
-
-
-<label for="queryPath">
-
-Query FASTA Path:
-
-</label>
-
-
-<input 
-id="queryPath"
-type="text"
-placeholder="Example: D:\Queries\tRFs.fasta">
-
-
-
-</div>
-
-
-
-
-
-
-
-<!-- DATABASE -->
-
-<div class="section">
-
-
-<h2>③ BLAST Database</h2>
-
-
-<label for="dbPath">
-
-Database Location:
-
-</label>
-
-
-<input
-
-id="dbPath"
-
-type="text"
-
-placeholder="Example: D:\Databases\tRNA_DB">
-
-
-<p>
-Do you already have a formatted BLAST database?
+<p id="fileMode">
+Select file mode
 </p>
 
 
 
-<div class="button-group">
+<label>
+Query Path
+</label>
 
 
-<button onclick="setDB(true)">
-🗄 Existing BLAST DB
-</button>
-
-
-<button onclick="setDB(false)">
-⚙ Create New BLAST DB
-</button>
-
-
-</div>
-
-
-
-<div id="dbMessage">
-
-Waiting for selection...
-
-</div>
+<input id="queryPath"
+placeholder="C:\Queries\query.fasta">
 
 
 </div>
@@ -216,102 +95,262 @@ Waiting for selection...
 
 
 
-
-
-<!-- PARAMETERS -->
 
 <div class="section">
 
 
-<h2>④ BLAST Parameters</h2>
+<h2>3. BLAST Database</h2>
+
+
+<label>
+Database Path
+</label>
+
+
+<input id="dbPath"
+placeholder="C:\Database\myDB">
+
+
+<br>
+
+
+<button onclick="setDB(true)">
+Existing Database
+</button>
+
+
+<button onclick="setDB(false)">
+Create Database
+</button>
+
+
+<p id="dbMessage">
+Select database status
+</p>
+
+
+</div>
 
 
 
-<div class="parameter-grid">
 
 
 
-<div>
+
+
+<div class="section">
+
+
+<h2>4. BLAST Parameters</h2>
+
+
 
 <label>
 E-value
 </label>
 
-<input 
-id="evalue"
-value="1e-7">
+<input id="evalue" value="1e-7">
 
-</div>
-
-
-
-
-
-<div>
 
 <label>
 Word Size
 </label>
 
-<input 
-id="wordsize"
-value="7">
+<input id="wordsize" value="7">
 
-</div>
-
-
-
-
-
-<div>
 
 <label>
 Percent Identity
 </label>
 
-<input 
-id="identity"
-value="100">
+<input id="identity" value="100">
 
-</div>
-
-
-
-
-
-<div>
 
 <label>
 Threads
 </label>
 
-<input 
-id="threads"
-value="8">
-
-</div>
+<input id="threads" value="8">
 
 
 
 </div>
 
 
+
+
+
+
+
+
+
+<div class="section">
+
+
+<h2>5. BLAST Output Columns</h2>
+
+
+<p>
+Select columns to include in output:
+</p>
+
+
+
+<div class="checkbox-grid">
+
+
+<label>
+<input type="checkbox" value="qseqid" checked>
+Query ID
+</label>
+
+
+<label>
+<input type="checkbox" value="sseqid" checked>
+Subject ID
+</label>
+
+
+
+<label>
+<input type="checkbox" value="pident" checked>
+Percent Identity
+</label>
+
+
+
+<label>
+<input type="checkbox" value="length" checked>
+Alignment Length
+</label>
+
+
+
+<label>
+<input type="checkbox" value="mismatch">
+Mismatches
+</label>
+
+
+
+<label>
+<input type="checkbox" value="gapopen">
+Gap Opens
+</label>
+
+
+
+<label>
+<input type="checkbox" value="qstart">
+Query Start
+</label>
+
+
+
+<label>
+<input type="checkbox" value="qend">
+Query End
+</label>
+
+
+
+<label>
+<input type="checkbox" value="sstart">
+Subject Start
+</label>
+
+
+
+<label>
+<input type="checkbox" value="send">
+Subject End
+</label>
+
+
+
+<label>
+<input type="checkbox" value="evalue">
+E-value
+</label>
+
+
+
+<label>
+<input type="checkbox" value="bitscore" checked>
+Bit Score
+</label>
+
+
+
+<label>
+<input type="checkbox" value="sstrand">
+Strand
+</label>
+
+
+
+<label>
+<input type="checkbox" value="qcovs">
+Query Coverage
+</label>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="section">
+
+
+<h2>6. Output File Type</h2>
+
+
+
+<select id="outputType">
+
+
+<option value="tsv">
+TSV (Tab Delimited)
+</option>
+
+
+<option value="csv">
+CSV
+</option>
+
+
+<option value="xlsx">
+Excel Workbook
+</option>
+
+
+<option value="txt">
+Text File
+</option>
+
+
+</select>
 
 
 
 
 <label>
-
-Output File:
-
+Output Name
 </label>
 
 
-<input
+<input id="outputName"
+value="blast_results">
 
-id="output"
-
-value="blast_results.tsv">
 
 
 </div>
@@ -323,60 +362,26 @@ value="blast_results.tsv">
 
 
 
-
-<!-- GENERATE -->
-
-<div class="section generate">
+<div class="section">
 
 
-<h2>
-⑤ Generate Command
-</h2>
-
-
-
-<button 
-class="generateButton"
+<button class="generateButton"
 onclick="generate()">
 
-🚀 Generate BLAST Command
+Generate BLAST Command
 
 </button>
 
 
+<h2>Generated Command</h2>
 
 
-<label>
-
-Your BLAST Command:
-
-</label>
-
-
-
-<textarea 
-id="result"
-placeholder="Your command will appear here...">
-
-</textarea>
+<textarea id="result"></textarea>
 
 
 
 </div>
 
-
-
-
-
-
-
-<footer>
-
-<p>
-Bioinformatics Utility Tool • BLAST Command Builder
-</p>
-
-</footer>
 
 
 
