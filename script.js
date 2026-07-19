@@ -1,68 +1,45 @@
-let multiple = false;
+let multiple=false;
 
-let databaseMade = true;
+let databaseMade=true;
 
 
 
 function setMultiple(value){
 
-
-    multiple=value;
-
-
-    if(value){
+multiple=value;
 
 
-        document.getElementById("fileMode").innerHTML =
-        "✓ Multiple FASTA files selected";
+document.getElementById("fileMode").innerHTML =
 
+value ?
 
-    }
+"Multiple FASTA files selected"
 
-    else{
+:
 
-
-        document.getElementById("fileMode").innerHTML =
-        "✓ Single FASTA file selected";
-
-
-    }
-
+"Single FASTA file selected";
 
 }
-
 
 
 
 
 function setDB(value){
 
-
-    databaseMade=value;
-
+databaseMade=value;
 
 
-    if(value){
+document.getElementById("dbMessage").innerHTML =
 
+value ?
 
-        document.getElementById("dbMessage").innerHTML =
-        "✓ Using existing BLAST database";
+"Using existing BLAST database"
 
+:
 
-    }
-
-    else{
-
-
-        document.getElementById("dbMessage").innerHTML =
-        "＋ makeblastdb command will be generated";
-
-
-    }
-
+"makeblastdb will be included";
 
 }
-
 
 
 
@@ -72,49 +49,52 @@ function setDB(value){
 function generate(){
 
 
+let blast=document.getElementById("blastType").value;
 
-let blast =
-document.getElementById("blastType").value;
+let query=document.getElementById("queryPath").value;
 
+let db=document.getElementById("dbPath").value;
 
+let evalue=document.getElementById("evalue").value;
 
-let query =
-document.getElementById("queryPath").value;
+let word=document.getElementById("wordsize").value;
 
+let identity=document.getElementById("identity").value;
 
+let threads=document.getElementById("threads").value;
 
-let db =
-document.getElementById("dbPath").value;
+let output=document.getElementById("outputName").value;
 
-
-
-let evalue =
-document.getElementById("evalue").value;
-
-
-
-let word =
-document.getElementById("wordsize").value;
+let extension=document.getElementById("outputType").value;
 
 
 
-let identity =
-document.getElementById("identity").value;
+let fields=[];
+
+
+document
+.querySelectorAll(".checkbox-grid input:checked")
+.forEach(x=>{
+
+fields.push(x.value);
+
+});
 
 
 
-let threads =
-document.getElementById("threads").value;
+let outfmt="6";
 
 
+if(extension==="csv"){
 
-let output =
-document.getElementById("output").value;
+outfmt="10";
+
+}
+
 
 
 
 let command="";
-
 
 
 
@@ -132,49 +112,19 @@ command +=
 
 \n\n`;
 
-
-
 }
 
 
-
-
-
-if(multiple){
-
-
-command +=
-
-`FOR EACH FASTA FILE:
-
-
-${blast} \\
--query FILE.fasta \\
--db ${db} \\
--out ${output} \\
--outfmt 6 \\
--evalue ${evalue} \\
--word_size ${word} \\
--perc_identity ${identity} \\
--num_threads ${threads}`;
-
-
-
-}
-
-
-
-else{
 
 
 command +=
 
 
 `${blast} \\
--query ${query} \\
--db ${db} \\
--out ${output} \\
--outfmt 6 \\
+-query "${query}" \\
+-db "${db}" \\
+-out "${output}.${extension}" \\
+-outfmt "${outfmt} ${fields.join(" ")}" \\
 -evalue ${evalue} \\
 -word_size ${word} \\
 -perc_identity ${identity} \\
@@ -182,14 +132,7 @@ command +=
 
 
 
-}
-
-
-
-
-document.getElementById("result").value =
-command;
-
+document.getElementById("result").value=command;
 
 
 }
