@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>BLAST Prompt Generator</title>
 
@@ -28,42 +27,73 @@ Generate BLAST commands automatically
 
 
 <button id="helpButton">
-Collapse Instructions
+About BLAST
 </button>
-
 
 
 <div id="helpContent">
 
 
-<h2>How to Run BLAST</h2>
-
-<p>
-This tool generates commands for NCBI BLAST+.
-Install BLAST+ before running generated commands.
-</p>
-
-
-<h3>Check Installation</h3>
-
-<pre>
-blastn -version
-</pre>
-
-
-<h3>Create a Database</h3>
-
-<pre>
-makeblastdb \
--in genome.fasta \
--dbtype nucl \
--out genome_DB
-</pre>
+<h2>About BLAST</h2>
 
 
 <p>
-Copy the generated command into your terminal.
+BLAST compares biological sequences against a database to identify similar sequences.
 </p>
+
+
+<h3>Parameters</h3>
+
+
+<p>
+<strong>E-value:</strong>
+Controls how statistically significant a match must be. Lower values are more stringent.
+</p>
+
+
+<p>
+<strong>Word Size:</strong>
+Controls the initial matching seed length. Smaller values increase sensitivity and are useful for short sequences.
+</p>
+
+
+<p>
+<strong>Percent Identity:</strong>
+Controls how similar sequences must be. 100 means only identical matches are accepted.
+</p>
+
+
+<p>
+<strong>CPU Threads:</strong>
+Controls how many processor cores BLAST uses.
+</p>
+
+
+<h3>Output Fields</h3>
+
+
+<p>
+Common BLAST output options:
+</p>
+
+
+<ul>
+
+<li>qseqid - query ID</li>
+
+<li>sseqid - subject ID</li>
+
+<li>pident - percent identity</li>
+
+<li>length - alignment length</li>
+
+<li>evalue - significance</li>
+
+<li>bitscore - alignment score</li>
+
+<li>qseq/sseq - aligned sequences</li>
+
+</ul>
 
 
 </div>
@@ -74,9 +104,11 @@ Copy the generated command into your terminal.
 
 
 
+
 <div class="section">
 
-<h2>BLAST Program</h2>
+
+<h2>BLAST Type</h2>
 
 
 <select id="blastType">
@@ -93,10 +125,13 @@ blastn-short
 blastp
 </option>
 
-
 </select>
 
+
 </div>
+
+
+
 
 
 
@@ -127,10 +162,11 @@ Select FASTA mode
 
 
 <input id="queryPath"
-placeholder="Example: D:\Queries\sample.fasta">
+placeholder="Query FASTA path">
 
 
 </div>
+
 
 
 
@@ -147,20 +183,16 @@ placeholder="Example: D:\Queries\sample.fasta">
 
 <label>
 Database FASTA file
-<br>
-(Only needed when creating a database)
 </label>
 
 
 <input id="databaseFastaPath"
-placeholder="Example: D:\DB\genome.fasta">
-
-
+placeholder="Only needed when creating database">
 
 
 
 <label>
-BLAST Database Name/Path
+BLAST Database Path
 </label>
 
 
@@ -169,17 +201,15 @@ placeholder="Example: D:\DB\genome_DB">
 
 
 
-
-
 <button id="existingDB">
-Use Existing Database
+Existing Database
 </button>
-
 
 
 <button id="createDB">
 Create Database
 </button>
+
 
 
 <p id="dbMessage">
@@ -200,39 +230,15 @@ Select database option
 <div class="section">
 
 
-<h2>BLAST Parameters</h2>
+<h2>Parameters</h2>
 
 
 
 <label>
-E-value (Expectation Value)
+E-value
 </label>
 
-
-<div class="parameter-description">
-
-Controls how likely a match occurred by chance.
-
-<br><br>
-
-Lower values = stricter searches.
-
-<br><br>
-
-Examples:
-<br>
-1e-3 → relaxed
-<br>
-1e-7 → common high confidence search
-<br>
-1e-20 → very strict
-
-</div>
-
-
 <input id="evalue" value="1e-7">
-
-
 
 
 
@@ -240,30 +246,7 @@ Examples:
 Word Size
 </label>
 
-
-<div class="parameter-description">
-
-Controls the initial matching sequence length.
-
-<br><br>
-
-Smaller values:
-<br>
-• More sensitive
-<br>
-• Better for short sequences
-
-<br><br>
-
-Common short sequence values:
-<strong>7-11</strong>
-
-</div>
-
-
 <input id="wordsize" value="7">
-
-
 
 
 
@@ -271,24 +254,7 @@ Common short sequence values:
 Percent Identity
 </label>
 
-
-<div class="parameter-description">
-
-Controls how similar sequences must be.
-
-<br><br>
-
-100 = exact matches only
-
-<br>
-95 = allows small differences
-
-</div>
-
-
 <input id="identity" value="100">
-
-
 
 
 
@@ -296,20 +262,7 @@ Controls how similar sequences must be.
 CPU Threads
 </label>
 
-
-<div class="parameter-description">
-
-Controls how many processor cores BLAST uses.
-
-<br><br>
-
-More threads usually speed up searches.
-
-</div>
-
-
 <input id="threads" value="8">
-
 
 
 </div>
@@ -325,7 +278,8 @@ More threads usually speed up searches.
 <div class="section">
 
 
-<h2>BLAST Output Columns</h2>
+<h2>Output Columns</h2>
+
 
 
 <div class="checkbox-grid">
@@ -427,10 +381,15 @@ sseq
 
 
 
+
 <div class="section">
 
 
-<h2>Output</h2>
+<h2>Generate</h2>
+
+
+<input id="outputName"
+value="blast_results">
 
 
 <select id="outputType">
@@ -449,16 +408,9 @@ CSV
 
 
 
-<input id="outputName"
-value="blast_results">
-
-
-
 <button id="generateButton">
 Generate BLAST Command
 </button>
-
-
 
 
 <textarea id="result"></textarea>
@@ -472,6 +424,7 @@ Generate BLAST Command
 
 
 </div>
+
 
 
 <script src="script.js"></script>
