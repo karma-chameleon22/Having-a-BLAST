@@ -18,7 +18,6 @@ function cleanPath(path){
 
 
 
-
 function quote(path){
 
     return `"${cleanPath(path)}"`;
@@ -34,65 +33,139 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-document.getElementById("singleButton").onclick=function(){
+    // Query mode
 
-    multiple=false;
+    document.getElementById("singleButton").onclick=function(){
 
-    document.getElementById("fileMode").innerHTML =
-    "Single FASTA file selected";
+        multiple=false;
 
-};
+        document.getElementById("fileMode").innerHTML =
+        "Single FASTA file selected";
 
-
-
-
-document.getElementById("multipleButton").onclick=function(){
-
-    multiple=true;
-
-    document.getElementById("fileMode").innerHTML =
-    "Multiple FASTA files selected";
-
-};
+    };
 
 
 
 
+    document.getElementById("multipleButton").onclick=function(){
 
+        multiple=true;
 
-document.getElementById("existingDB").onclick=function(){
+        document.getElementById("fileMode").innerHTML =
+        "Multiple FASTA files selected";
 
-    databaseMade=true;
-
-    document.getElementById("dbMessage").innerHTML =
-    "Using existing BLAST database";
-
-};
+    };
 
 
 
 
 
 
-document.getElementById("createDB").onclick=function(){
-
-    databaseMade=false;
-
-    document.getElementById("dbMessage").innerHTML =
-    "makeblastdb command will be generated";
-
-};
+    // Database selection
 
 
+    document.getElementById("existingDB").onclick=function(){
+
+        databaseMade=true;
+
+        document.getElementById("dbMessage").innerHTML =
+        "Using existing BLAST database";
+
+    };
 
 
 
 
-document.getElementById("generateButton").onclick=function(){
 
-    generateBLAST();
+    document.getElementById("createDB").onclick=function(){
 
-};
+        databaseMade=false;
+
+        document.getElementById("dbMessage").innerHTML =
+        "makeblastdb command will be generated";
+
+    };
+
+
+
+
+
+
+
+    // Collapse instructions
+
+
+    const helpButton =
+    document.getElementById("helpButton");
+
+
+    const helpContent =
+    document.getElementById("helpContent");
+
+
+
+    if(helpButton && helpContent){
+
+
+
+        // Start expanded
+
+        helpContent.style.display="block";
+
+        helpButton.innerHTML =
+        "Collapse Instructions";
+
+
+
+
+        helpButton.onclick=function(){
+
+
+
+            if(helpContent.style.display==="none"){
+
+
+                helpContent.style.display="block";
+
+
+                helpButton.innerHTML =
+                "Collapse Instructions";
+
+
+            }
+
+            else{
+
+
+                helpContent.style.display="none";
+
+
+                helpButton.innerHTML =
+                "How to Run BLAST on Your Computer";
+
+
+            }
+
+
+        };
+
+
+    }
+
+
+
+
+
+
+
+    // Generate button
+
+
+    document.getElementById("generateButton").onclick=function(){
+
+        generateBLAST();
+
+    };
 
 
 
@@ -115,6 +188,7 @@ document.getElementById("blastType").value;
 
 
 
+
 let query =
 cleanPath(
 document.getElementById("queryPath").value
@@ -126,6 +200,7 @@ let db =
 cleanPath(
 document.getElementById("dbPath").value
 );
+
 
 
 
@@ -161,14 +236,16 @@ document.getElementById("outputType").value;
 
 
 
+
 let fields=[];
+
 
 
 document
 .querySelectorAll(".checkbox-grid input:checked")
 .forEach(function(box){
 
-fields.push(box.value);
+    fields.push(box.value);
 
 });
 
@@ -190,8 +267,6 @@ if(extension==="csv"){
 
 
 
-
-
 let command="";
 
 
@@ -200,15 +275,15 @@ let command="";
 
 
 
-// Create database if needed
+// MAKEBLASTDB
 
 if(databaseMade===false){
 
 
-command +=
+    command +=
 
 `makeblastdb \\
--in ${quote(db + ".fasta")} \\
+-in ${quote(query)} \\
 -dbtype nucl \\
 -out ${quote(db)}
 
@@ -223,12 +298,9 @@ command +=
 
 
 
-
-
-// MULTIPLE FASTA MODE
+// MULTIPLE FASTA
 
 if(multiple){
-
 
 
 command +=
@@ -255,10 +327,9 @@ done`;
 
 
 
-// SINGLE FASTA MODE
+// SINGLE FASTA
 
 else{
-
 
 
 command +=
@@ -274,7 +345,6 @@ command +=
 -num_threads ${threads}`;
 
 
-
 }
 
 
@@ -284,7 +354,6 @@ command +=
 
 document.getElementById("result").value =
 command;
-
 
 
 }
