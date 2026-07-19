@@ -1,85 +1,114 @@
+let multiple = false;
 
-let multiple=false;
-let databaseMade=true;
+let databaseMade = true;
+
 
 
 function setMultiple(value){
 
-multiple=value;
 
-if(value){
+    multiple=value;
 
-document.getElementById("fileMode").innerHTML =
-"Multiple FASTA mode selected";
+
+    if(value){
+
+
+        document.getElementById("fileMode").innerHTML =
+        "✓ Multiple FASTA files selected";
+
+
+    }
+
+    else{
+
+
+        document.getElementById("fileMode").innerHTML =
+        "✓ Single FASTA file selected";
+
+
+    }
+
 
 }
 
-else{
 
-document.getElementById("fileMode").innerHTML =
-"Single FASTA mode selected";
-
-}
-
-}
 
 
 
 function setDB(value){
 
-databaseMade=value;
+
+    databaseMade=value;
 
 
-if(value){
 
-document.getElementById("dbMessage").innerHTML =
-"Using existing BLAST database";
+    if(value){
+
+
+        document.getElementById("dbMessage").innerHTML =
+        "✓ Using existing BLAST database";
+
+
+    }
+
+    else{
+
+
+        document.getElementById("dbMessage").innerHTML =
+        "＋ makeblastdb command will be generated";
+
+
+    }
+
 
 }
 
-else{
 
-document.getElementById("dbMessage").innerHTML =
-"makeblastdb command will be generated";
 
-}
 
-}
 
 
 
 function generate(){
 
 
-let blast=
+
+let blast =
 document.getElementById("blastType").value;
 
 
-let query=
+
+let query =
 document.getElementById("queryPath").value;
 
 
-let db=
+
+let db =
 document.getElementById("dbPath").value;
 
 
-let evalue=
+
+let evalue =
 document.getElementById("evalue").value;
 
 
-let word=
+
+let word =
 document.getElementById("wordsize").value;
 
 
-let identity=
+
+let identity =
 document.getElementById("identity").value;
 
 
-let threads=
+
+let threads =
 document.getElementById("threads").value;
 
 
-let output=
+
+let output =
 document.getElementById("output").value;
 
 
@@ -88,17 +117,26 @@ let command="";
 
 
 
+
+
 if(!databaseMade){
 
+
 command +=
+
 `makeblastdb \\
 -in ${db}.fasta \\
 -dbtype nucl \\
 -out ${db}
 
+
 \n\n`;
 
+
+
 }
+
+
 
 
 
@@ -106,7 +144,9 @@ if(multiple){
 
 
 command +=
-`FOR each FASTA file:
+
+`FOR EACH FASTA FILE:
+
 
 ${blast} \\
 -query FILE.fasta \\
@@ -119,12 +159,17 @@ ${blast} \\
 -num_threads ${threads}`;
 
 
+
 }
+
+
 
 else{
 
 
 command +=
+
+
 `${blast} \\
 -query ${query} \\
 -db ${db} \\
@@ -135,10 +180,16 @@ command +=
 -perc_identity ${identity} \\
 -num_threads ${threads}`;
 
+
+
 }
 
 
-document.getElementById("result").value=command;
+
+
+document.getElementById("result").value =
+command;
+
 
 
 }
