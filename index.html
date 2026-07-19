@@ -21,7 +21,7 @@
 <h1>BLAST Prompt Generator</h1>
 
 <p class="subtitle">
-Generate customized BLAST commands with automated output formatting
+Generate custom BLAST commands with automated output formatting
 </p>
 
 
@@ -29,26 +29,19 @@ Generate customized BLAST commands with automated output formatting
 
 <div class="section">
 
-<h2>1. BLAST Program</h2>
+<h2>BLAST Program</h2>
 
 
 <select id="blastType">
 
 <option value="blastn">blastn</option>
-
 <option value="blastn-short">blastn-short</option>
-
 <option value="blastp">blastp</option>
-
 <option value="blastx">blastx</option>
-
 <option value="tblastn">tblastn</option>
-
 <option value="tblastx">tblastx</option>
 
-
 </select>
-
 
 </div>
 
@@ -57,10 +50,11 @@ Generate customized BLAST commands with automated output formatting
 
 
 
+
 <div class="section">
 
 
-<h2>2. Query Files</h2>
+<h2>Query Files</h2>
 
 
 <button onclick="setMultiple(false)">
@@ -74,13 +68,13 @@ Multiple FASTA Files
 
 
 <p id="fileMode">
-Select file mode
+No selection
 </p>
 
 
 
 <label>
-Query Path
+Query FASTA Path
 </label>
 
 
@@ -96,22 +90,20 @@ placeholder="C:\Queries\query.fasta">
 
 
 
+
 <div class="section">
 
 
-<h2>3. BLAST Database</h2>
+<h2>Database</h2>
 
 
 <label>
-Database Path
+BLAST Database Path
 </label>
 
 
 <input id="dbPath"
-placeholder="C:\Database\myDB">
-
-
-<br>
+placeholder="C:\Database\my_database">
 
 
 <button onclick="setDB(true)">
@@ -125,7 +117,7 @@ Create Database
 
 
 <p id="dbMessage">
-Select database status
+No selection
 </p>
 
 
@@ -141,8 +133,7 @@ Select database status
 <div class="section">
 
 
-<h2>4. BLAST Parameters</h2>
-
+<h2>BLAST Parameters</h2>
 
 
 <label>
@@ -173,7 +164,6 @@ Threads
 <input id="threads" value="8">
 
 
-
 </div>
 
 
@@ -187,116 +177,52 @@ Threads
 <div class="section">
 
 
-<h2>5. BLAST Output Columns</h2>
-
-
-<p>
-Select columns to include in output:
-</p>
-
+<h2>Output Columns</h2>
 
 
 <div class="checkbox-grid">
 
 
-<label>
-<input type="checkbox" value="qseqid" checked>
-Query ID
-</label>
+<label><input type="checkbox" value="qseqid" checked> Query ID</label>
 
+<label><input type="checkbox" value="sseqid" checked> Subject ID</label>
 
-<label>
-<input type="checkbox" value="sseqid" checked>
-Subject ID
-</label>
+<label><input type="checkbox" value="pident" checked> Percent Identity</label>
 
+<label><input type="checkbox" value="length" checked> Alignment Length</label>
 
+<label><input type="checkbox" value="mismatch"> Mismatches</label>
 
-<label>
-<input type="checkbox" value="pident" checked>
-Percent Identity
-</label>
+<label><input type="checkbox" value="gapopen"> Gap Opens</label>
 
+<label><input type="checkbox" value="qstart"> Query Start</label>
 
+<label><input type="checkbox" value="qend"> Query End</label>
 
-<label>
-<input type="checkbox" value="length" checked>
-Alignment Length
-</label>
+<label><input type="checkbox" value="sstart"> Subject Start</label>
 
+<label><input type="checkbox" value="send"> Subject End</label>
 
+<label><input type="checkbox" value="evalue" checked> E-value</label>
 
-<label>
-<input type="checkbox" value="mismatch">
-Mismatches
-</label>
+<label><input type="checkbox" value="bitscore" checked> Bit Score</label>
 
+<label><input type="checkbox" value="qseq"> Query Sequence</label>
 
+<label><input type="checkbox" value="sseq"> Subject Sequence</label>
 
-<label>
-<input type="checkbox" value="gapopen">
-Gap Opens
-</label>
+<label><input type="checkbox" value="qlen"> Query Length</label>
 
+<label><input type="checkbox" value="slen"> Subject Length</label>
 
+<label><input type="checkbox" value="qcovhsp"> Query Coverage</label>
 
-<label>
-<input type="checkbox" value="qstart">
-Query Start
-</label>
+<label><input type="checkbox" value="frames"> Frames</label>
 
-
-
-<label>
-<input type="checkbox" value="qend">
-Query End
-</label>
-
-
-
-<label>
-<input type="checkbox" value="sstart">
-Subject Start
-</label>
-
-
-
-<label>
-<input type="checkbox" value="send">
-Subject End
-</label>
-
-
-
-<label>
-<input type="checkbox" value="evalue">
-E-value
-</label>
-
-
-
-<label>
-<input type="checkbox" value="bitscore" checked>
-Bit Score
-</label>
-
-
-
-<label>
-<input type="checkbox" value="sstrand">
-Strand
-</label>
-
-
-
-<label>
-<input type="checkbox" value="qcovs">
-Query Coverage
-</label>
+<label><input type="checkbox" value="staxids"> Taxonomy ID</label>
 
 
 </div>
-
 
 </div>
 
@@ -311,40 +237,23 @@ Query Coverage
 <div class="section">
 
 
-<h2>6. Output File Type</h2>
-
+<h2>Output File</h2>
 
 
 <select id="outputType">
 
+<option value="tsv">TSV</option>
 
-<option value="tsv">
-TSV (Tab Delimited)
-</option>
+<option value="csv">CSV</option>
 
-
-<option value="csv">
-CSV
-</option>
-
-
-<option value="xlsx">
-Excel Workbook
-</option>
-
-
-<option value="txt">
-Text File
-</option>
-
+<option value="txt">TXT</option>
 
 </select>
 
 
 
-
 <label>
-Output Name
+File Name
 </label>
 
 
@@ -352,8 +261,8 @@ Output Name
 value="blast_results">
 
 
-
 </div>
+
 
 
 
@@ -373,27 +282,24 @@ Generate BLAST Command
 </button>
 
 
-<h2>Generated Command</h2>
 
+<textarea id="result"
+placeholder="Generated command will appear here">
 
-<textarea id="result"></textarea>
-
-
-
-</div>
-
-
-
+</textarea>
 
 
 </div>
 
+
+
+
+</div>
 
 
 <script src="script.js"></script>
 
 
 </body>
-
 
 </html>
