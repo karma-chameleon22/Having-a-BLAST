@@ -1,169 +1,230 @@
-body {
+<!DOCTYPE html>
+<html>
 
-    font-family: "Segoe UI", Arial, sans-serif;
-    margin: 0;
-    padding: 40px;
+<head>
 
-    background: #F5F1F0;
-    color: #333;
+<title>BLAST Prompt Generator</title>
 
-}
+<link rel="stylesheet" href="style.css">
 
+</head>
 
-.container {
 
-    max-width: 900px;
-    margin: auto;
+<body>
 
-}
 
+<div class="container">
 
-h1 {
 
-    text-align: center;
-    font-size: 36px;
-    color: #2F3E46;
-    margin-bottom: 30px;
+<h1>
+🧬 BLAST Prompt Generator
+</h1>
 
-}
 
+<div class="section">
 
-h2 {
 
-    color: #354F52;
-    margin-top: 30px;
+<h2>BLAST Type</h2>
 
-}
 
+<label>Select BLAST Program:</label>
 
 
-.section {
+<select id="blastType">
 
-    background: white;
+<option value="blastn">blastn</option>
 
-    padding: 25px;
+<option value="blastn-short">blastn-short</option>
 
-    margin-bottom: 20px;
+<option value="blastp">blastp</option>
 
-    border-radius: 15px;
+<option value="blastx">blastx</option>
 
-    box-shadow: 
-        0px 4px 12px rgba(0,0,0,0.08);
+<option value="tblastn">tblastn</option>
 
-}
+<option value="tblastx">tblastx</option>
 
 
+</select>
 
-label {
 
-    font-weight: 600;
+</div>
 
-    display:block;
 
-    margin-top:15px;
 
-    color:#354F52;
+<div class="section">
 
-}
 
+<h2>Query Files</h2>
 
 
-input, select, textarea {
+<button onclick="setMultiple(false)">
+Single FASTA File
+</button>
 
 
-    width:100%;
+<button onclick="setMultiple(true)">
+Multiple FASTA Files
+</button>
 
-    box-sizing:border-box;
 
-    padding:12px;
+<div id="fileMode">
+Select query type
+</div>
 
-    margin-top:8px;
 
-    border-radius:8px;
 
-    border:1px solid #D8CFCC;
+<label>
+Query FASTA Path:
+</label>
 
-    background:#FAFAFA;
 
-    font-size:15px;
+<input 
+id="queryPath"
+placeholder="Example: D:\Queries\tRFs.fasta">
 
 
-}
 
+</div>
 
 
-input:focus, select:focus, textarea:focus {
 
-    outline:none;
 
-    border-color:#84A98C;
+<div class="section">
 
-    box-shadow:0 0 5px rgba(84,130,90,0.3);
 
-}
+<h2>BLAST Database</h2>
 
 
+<label>
+Database Path:
+</label>
 
-button {
 
+<input 
+id="dbPath"
+placeholder="Example: D:\Databases\tRNA_DB">
 
-    background:#52796F;
 
-    color:white;
 
-    border:none;
+<button onclick="setDB(true)">
+✓ Existing BLAST DB
+</button>
 
-    padding:12px 20px;
 
-    border-radius:10px;
 
-    margin:8px;
+<button onclick="setDB(false)">
+＋ Create BLAST DB
+</button>
 
-    font-size:15px;
 
-    cursor:pointer;
 
-    transition:0.2s;
+<div id="dbMessage">
+Select database status
+</div>
 
 
-}
+</div>
 
 
 
-button:hover {
 
-    background:#354F52;
 
-    transform:translateY(-2px);
+<div class="section">
 
-}
 
+<h2>BLAST Parameters</h2>
 
 
-textarea {
+<label>
+E-value:
+</label>
 
-    height:280px;
+<input 
+id="evalue"
+value="1e-7">
 
-    font-family:Consolas, monospace;
 
-    background:#1E1E1E;
 
-    color:#D8F3DC;
+<label>
+Word Size:
+</label>
 
-}
+<input 
+id="wordsize"
+value="7">
 
 
 
-#fileMode, #dbMessage {
+<label>
+Percent Identity:
+</label>
 
-    background:#E9E3E0;
+<input 
+id="identity"
+value="100">
 
-    padding:10px;
 
-    border-radius:8px;
 
-    margin-top:10px;
+<label>
+Number of Threads:
+</label>
 
-    color:#354F52;
+<input 
+id="threads"
+value="8">
 
-}
+
+
+<label>
+Output File:
+</label>
+
+
+<input
+id="output"
+value="blast_results.tsv">
+
+
+
+</div>
+
+
+
+
+
+
+<div class="section generate">
+
+
+<button 
+class="generateButton"
+onclick="generate()">
+
+🧬 Generate BLAST Command
+
+</button>
+
+
+<h2>
+Generated Command
+</h2>
+
+
+<textarea id="result"></textarea>
+
+
+</div>
+
+
+
+</div>
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+
+</html>
