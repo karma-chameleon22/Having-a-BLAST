@@ -1,67 +1,77 @@
-let multipleFiles=false;
+let multipleFiles = false;
 
-let createDatabase=false;
-
-
-
-function cleanPath(path){
-
-return path
-.trim()
-.replace(/^"+|"+$/g,"");
-
-}
+let createDatabase = false;
 
 
 
-function quote(path){
 
-return `"${cleanPath(path)}"`;
+function cleanPath(path) {
+
+    if (!path) {
+        return "";
+    }
+
+
+    return path
+        .trim()
+        .replace(/^"+|"+$/g, "");
 
 }
 
 
 
 
+function quote(path) {
 
-
-document.addEventListener(
-"DOMContentLoaded",
-function(){
-
-
-
-let helpButton=document.getElementById("helpButton");
-
-let help=document.getElementById("helpContent");
-
-
-
-helpButton.onclick=function(){
-
-
-if(help.style.display==="block"){
-
-
-help.style.display="none";
-
-helpButton.innerHTML="About BLAST";
-
-
-}
-
-else{
-
-
-help.style.display="block";
-
-helpButton.innerHTML="Collapse About BLAST";
-
+    return `"${cleanPath(path)}"`;
 
 }
 
 
-};
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+
+    // ABOUT BUTTON
+
+    const aboutButton =
+        document.getElementById("aboutButton");
+
+
+    const aboutContent =
+        document.getElementById("aboutContent");
+
+
+
+    aboutButton.addEventListener("click", function () {
+
+
+        if (aboutContent.style.display === "block") {
+
+
+            aboutContent.style.display = "none";
+
+            aboutButton.innerHTML =
+                "About BLAST";
+
+
+        } else {
+
+
+            aboutContent.style.display = "block";
+
+            aboutButton.innerHTML =
+                "Collapse About BLAST";
+
+
+        }
+
+
+    });
 
 
 
@@ -70,64 +80,113 @@ helpButton.innerHTML="Collapse About BLAST";
 
 
 
-document.getElementById("singleButton").onclick=function(){
-
-multipleFiles=false;
-
-document.getElementById("fileMode").innerHTML=
-"Single FASTA selected";
-
-};
+    // FASTA MODE
 
 
+    document
+        .getElementById("singleButton")
+        .addEventListener("click", function () {
 
 
+            multipleFiles = false;
 
 
-document.getElementById("multipleButton").onclick=function(){
+            document
+                .getElementById("fileMode")
+                .innerHTML =
+                "Single FASTA selected";
 
-multipleFiles=true;
 
-document.getElementById("fileMode").innerHTML=
-"Multiple FASTA selected";
-
-};
+        });
 
 
 
 
 
 
-document.getElementById("existingDB").onclick=function(){
 
-createDatabase=false;
-
-document.getElementById("dbMessage").innerHTML=
-"Using existing database";
-
-};
+    document
+        .getElementById("multipleButton")
+        .addEventListener("click", function () {
 
 
+            multipleFiles = true;
 
 
+            document
+                .getElementById("fileMode")
+                .innerHTML =
+                "Multiple FASTA selected";
 
 
-document.getElementById("createDB").onclick=function(){
-
-createDatabase=true;
-
-document.getElementById("dbMessage").innerHTML=
-"Creating database";
-
-};
+        });
 
 
 
 
 
 
-document.getElementById("generateButton").onclick=
-generateBLAST;
+
+
+
+    // DATABASE MODE
+
+
+
+    document
+        .getElementById("existingDB")
+        .addEventListener("click", function () {
+
+
+            createDatabase = false;
+
+
+            document
+                .getElementById("dbMessage")
+                .innerHTML =
+                "Using existing BLAST database";
+
+
+        });
+
+
+
+
+
+
+
+
+    document
+        .getElementById("createDB")
+        .addEventListener("click", function () {
+
+
+            createDatabase = true;
+
+
+            document
+                .getElementById("dbMessage")
+                .innerHTML =
+                "Creating new BLAST database";
+
+
+        });
+
+
+
+
+
+
+
+
+
+    // GENERATE BUTTON
+
+
+
+    document
+        .getElementById("generateButton")
+        .addEventListener("click", generateBLAST);
 
 
 
@@ -141,102 +200,193 @@ generateBLAST;
 
 
 
-
-function generateBLAST(){
-
-
-let blast=document.getElementById("blastType").value;
-
-
-let query=cleanPath(
-document.getElementById("queryPath").value
-);
-
-
-let db=cleanPath(
-document.getElementById("databasePath").value
-);
-
-
-let dbFasta=cleanPath(
-document.getElementById("databaseFastaPath").value
-);
+function generateBLAST() {
 
 
 
-let fields=[];
-
-
-document
-.querySelectorAll(".checkbox-grid input:checked")
-.forEach(x=>fields.push(x.value));
-
-
-
-let command="";
+    let blastType =
+        document.getElementById("blastType").value;
 
 
 
 
-if(createDatabase){
+    let queryPath =
+        cleanPath(
+            document.getElementById("queryPath").value
+        );
 
 
-command+=
+
+
+    let databasePath =
+        cleanPath(
+            document.getElementById("databasePath").value
+        );
+
+
+
+
+    let databaseFasta =
+        cleanPath(
+            document.getElementById("databaseFastaPath").value
+        );
+
+
+
+
+
+    let evalue =
+        document.getElementById("evalue").value;
+
+
+
+    let wordSize =
+        document.getElementById("wordsize").value;
+
+
+
+    let identity =
+        document.getElementById("identity").value;
+
+
+
+    let threads =
+        document.getElementById("threads").value;
+
+
+
+    let outputName =
+        document.getElementById("outputName").value;
+
+
+
+    let outputType =
+        document.getElementById("outputType").value;
+
+
+
+
+
+
+
+    let fields = [];
+
+
+
+    document
+        .querySelectorAll(".checkbox-grid input:checked")
+        .forEach(function (box) {
+
+
+            fields.push(box.value);
+
+
+        });
+
+
+
+
+
+
+
+    let command = "";
+
+
+
+
+
+
+
+
+
+    // DATABASE CREATION
+
+
+    if (createDatabase) {
+
+
+        command +=
 
 `makeblastdb \\
--in ${quote(dbFasta)} \\
+-in ${quote(databaseFasta)} \\
 -dbtype nucl \\
--out ${quote(db)}
-
-\n\n`;
-
-}
+-out ${quote(databasePath)}
 
 
 
+`;
 
 
-if(multipleFiles){
+    }
 
 
-command+=
+
+
+
+
+
+
+
+    // MULTIPLE FASTA MODE
+
+
+    if (multipleFiles) {
+
+
+        command +=
 
 `for file in *.fasta; do
-    ${blast} \\
+    ${blastType} \\
     -query "$file" \\
-    -db ${quote(db)} \\
-    -out "\${file%.fasta}_blast.tsv" \\
+    -db ${quote(databasePath)} \\
+    -out "\${file%.fasta}_blast.${outputType}" \\
     -outfmt "6 ${fields.join(" ")}" \\
-    -word_size ${document.getElementById("wordsize").value} \\
-    -perc_identity ${document.getElementById("identity").value} \\
-    -evalue ${document.getElementById("evalue").value} \\
-    -num_threads ${document.getElementById("threads").value}
+    -word_size ${wordSize} \\
+    -perc_identity ${identity} \\
+    -evalue ${evalue} \\
+    -num_threads ${threads}
 done`;
 
 
 
-}
-
-else{
+    }
 
 
-command+=
 
-`${blast} \\
--query ${quote(query)} \\
--db ${quote(db)} \\
--out "${document.getElementById("outputName").value}.tsv" \\
+
+
+
+
+    // SINGLE FASTA MODE
+
+
+    else {
+
+
+        command +=
+
+`${blastType} \\
+-query ${quote(queryPath)} \\
+-db ${quote(databasePath)} \\
+-out "${outputName}.${outputType}" \\
 -outfmt "6 ${fields.join(" ")}" \\
--word_size ${document.getElementById("wordsize").value} \\
--perc_identity ${document.getElementById("identity").value} \\
--evalue ${document.getElementById("evalue").value} \\
--num_threads ${document.getElementById("threads").value}`;
+-word_size ${wordSize} \\
+-perc_identity ${identity} \\
+-evalue ${evalue} \\
+-num_threads ${threads}`;
 
-}
+    }
 
 
 
-document.getElementById("result").value=command;
+
+
+
+
+    document
+        .getElementById("result")
+        .value = command;
+
 
 
 }
