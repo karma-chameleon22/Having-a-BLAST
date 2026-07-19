@@ -4,20 +4,17 @@ let createDatabase = false;
 
 
 
-
 function cleanPath(path) {
 
     if (!path) {
         return "";
     }
 
-
     return path
         .trim()
         .replace(/^"+|"+$/g, "");
 
 }
-
 
 
 
@@ -31,12 +28,11 @@ function quote(path) {
 
 
 
-
 document.addEventListener("DOMContentLoaded", function () {
 
 
+    // ABOUT BLAST COLLAPSE
 
-    // ABOUT BUTTON
 
     const aboutButton =
         document.getElementById("aboutButton");
@@ -47,25 +43,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+    // Always start collapsed
+
+    aboutContent.style.display = "none";
+
+
+
     aboutButton.addEventListener("click", function () {
 
 
-        if (aboutContent.style.display === "block") {
-
-
-            aboutContent.style.display = "none";
-
-            aboutButton.innerHTML =
-                "About BLAST";
-
-
-        } else {
+        if (aboutContent.style.display === "none") {
 
 
             aboutContent.style.display = "block";
 
             aboutButton.innerHTML =
                 "Collapse About BLAST";
+
+
+        } else {
+
+
+            aboutContent.style.display = "none";
+
+            aboutButton.innerHTML =
+                "About BLAST";
 
 
         }
@@ -78,49 +80,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-    // FASTA MODE
-
-
-    document
-        .getElementById("singleButton")
-        .addEventListener("click", function () {
-
-
-            multipleFiles = false;
-
-
-            document
-                .getElementById("fileMode")
-                .innerHTML =
-                "Single FASTA selected";
-
-
-        });
-
-
-
-
-
+    // SINGLE FASTA
 
 
     document
-        .getElementById("multipleButton")
-        .addEventListener("click", function () {
+    .getElementById("singleButton")
+    .addEventListener("click", function(){
 
 
-            multipleFiles = true;
+        multipleFiles = false;
 
 
-            document
-                .getElementById("fileMode")
-                .innerHTML =
-                "Multiple FASTA selected";
+        document.getElementById("fileMode").innerHTML =
+        "Single FASTA selected";
 
 
-        });
-
+    });
 
 
 
@@ -128,49 +103,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-    // DATABASE MODE
-
+    // MULTIPLE FASTA
 
 
     document
-        .getElementById("existingDB")
-        .addEventListener("click", function () {
+    .getElementById("multipleButton")
+    .addEventListener("click", function(){
 
 
-            createDatabase = false;
+        multipleFiles = true;
 
 
-            document
-                .getElementById("dbMessage")
-                .innerHTML =
-                "Using existing BLAST database";
+        document.getElementById("fileMode").innerHTML =
+        "Multiple FASTA selected";
 
 
-        });
-
-
-
-
-
-
-
-
-    document
-        .getElementById("createDB")
-        .addEventListener("click", function () {
-
-
-            createDatabase = true;
-
-
-            document
-                .getElementById("dbMessage")
-                .innerHTML =
-                "Creating new BLAST database";
-
-
-        });
+    });
 
 
 
@@ -179,14 +127,60 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-    // GENERATE BUTTON
-
+    // EXISTING DATABASE
 
 
     document
-        .getElementById("generateButton")
-        .addEventListener("click", generateBLAST);
+    .getElementById("existingDB")
+    .addEventListener("click", function(){
+
+
+        createDatabase = false;
+
+
+        document.getElementById("dbMessage").innerHTML =
+        "Using existing BLAST database";
+
+
+    });
+
+
+
+
+
+
+
+
+    // CREATE DATABASE
+
+
+    document
+    .getElementById("createDB")
+    .addEventListener("click", function(){
+
+
+        createDatabase = true;
+
+
+        document.getElementById("dbMessage").innerHTML =
+        "Creating new BLAST database";
+
+
+    });
+
+
+
+
+
+
+
+
+    // GENERATE
+
+
+    document
+    .getElementById("generateButton")
+    .addEventListener("click", generateBLAST);
 
 
 
@@ -200,70 +194,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-function generateBLAST() {
+function generateBLAST(){
 
 
 
-    let blastType =
-        document.getElementById("blastType").value;
+    const blastType =
+    document.getElementById("blastType").value;
 
 
 
-
-    let queryPath =
-        cleanPath(
-            document.getElementById("queryPath").value
-        );
-
+    const queryPath =
+    cleanPath(
+        document.getElementById("queryPath").value
+    );
 
 
 
-    let databasePath =
-        cleanPath(
-            document.getElementById("databasePath").value
-        );
+    const databasePath =
+    cleanPath(
+        document.getElementById("databasePath").value
+    );
 
 
 
-
-    let databaseFasta =
-        cleanPath(
-            document.getElementById("databaseFastaPath").value
-        );
-
+    const databaseFasta =
+    cleanPath(
+        document.getElementById("databaseFastaPath").value
+    );
 
 
 
-
-    let evalue =
-        document.getElementById("evalue").value;
-
-
-
-    let wordSize =
-        document.getElementById("wordsize").value;
+    const evalue =
+    document.getElementById("evalue").value;
 
 
 
-    let identity =
-        document.getElementById("identity").value;
+    const wordSize =
+    document.getElementById("wordsize").value;
 
 
 
-    let threads =
-        document.getElementById("threads").value;
+    const identity =
+    document.getElementById("identity").value;
 
 
 
-    let outputName =
-        document.getElementById("outputName").value;
+    const threads =
+    document.getElementById("threads").value;
 
 
 
-    let outputType =
-        document.getElementById("outputType").value;
+    const outputName =
+    document.getElementById("outputName").value;
 
 
+
+    const outputType =
+    document.getElementById("outputType").value;
 
 
 
@@ -274,14 +261,14 @@ function generateBLAST() {
 
 
     document
-        .querySelectorAll(".checkbox-grid input:checked")
-        .forEach(function (box) {
+    .querySelectorAll(".checkbox-grid input:checked")
+    .forEach(function(box){
 
 
-            fields.push(box.value);
+        fields.push(box.value);
 
 
-        });
+    });
 
 
 
@@ -298,11 +285,10 @@ function generateBLAST() {
 
 
 
+    // CREATE DATABASE
 
-    // DATABASE CREATION
 
-
-    if (createDatabase) {
+    if(createDatabase){
 
 
         command +=
@@ -313,9 +299,7 @@ function generateBLAST() {
 -out ${quote(databasePath)}
 
 
-
 `;
-
 
     }
 
@@ -327,10 +311,10 @@ function generateBLAST() {
 
 
 
-    // MULTIPLE FASTA MODE
+    // MULTIPLE FASTA
 
 
-    if (multipleFiles) {
+    if(multipleFiles){
 
 
         command +=
@@ -357,7 +341,8 @@ done`;
 
 
 
-    // SINGLE FASTA MODE
+
+    // SINGLE FASTA
 
 
     else {
@@ -384,9 +369,8 @@ done`;
 
 
     document
-        .getElementById("result")
-        .value = command;
-
+    .getElementById("result")
+    .value = command;
 
 
 }
