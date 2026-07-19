@@ -1,128 +1,170 @@
 let databaseMade = true;
-
-
-
-document.addEventListener("DOMContentLoaded", function(){
-
-
 let multiple = false;
 
 
+document.addEventListener("DOMContentLoaded", function () {
 
-document.getElementById("singleButton")
-.onclick=function(){
 
-multiple=false;
+    // Query selection buttons
 
-document.getElementById("fileMode").innerHTML =
-"Single FASTA selected";
+    const singleButton = document.getElementById("singleButton");
+    const multipleButton = document.getElementById("multipleButton");
 
-};
 
+    if(singleButton){
 
+        singleButton.onclick = function(){
 
-document.getElementById("multipleButton")
-.onclick=function(){
+            multiple = false;
 
-multiple=true;
+            document.getElementById("fileMode").innerHTML =
+            "Single FASTA selected";
 
-document.getElementById("fileMode").innerHTML =
-"Multiple FASTA files selected";
+        };
 
-};
+    }
 
 
 
+    if(multipleButton){
 
+        multipleButton.onclick = function(){
 
-document.getElementById("existingDB")
-.onclick=function(){
+            multiple = true;
 
-databaseMade=true;
+            document.getElementById("fileMode").innerHTML =
+            "Multiple FASTA files selected";
 
-document.getElementById("dbMessage").innerHTML =
-"Using existing BLAST database";
+        };
 
-};
+    }
 
 
 
 
+    // Database buttons
 
-document.getElementById("createDB")
-.onclick=function(){
 
-databaseMade=false;
+    const existingDB =
+    document.getElementById("existingDB");
 
-document.getElementById("dbMessage").innerHTML =
-"makeblastdb command will be included";
 
-};
+    const createDB =
+    document.getElementById("createDB");
 
 
 
+    if(existingDB){
 
+        existingDB.onclick=function(){
 
+            databaseMade=true;
 
-document.getElementById("generateButton")
-.onclick=function(){
+            document.getElementById("dbMessage").innerHTML =
+            "Using existing BLAST database";
 
+        };
 
+    }
 
-let blast =
-document.getElementById("blastType").value;
 
 
 
-let query =
-document.getElementById("queryPath").value;
+    if(createDB){
 
+        createDB.onclick=function(){
 
+            databaseMade=false;
 
-let db =
-document.getElementById("dbPath").value;
+            document.getElementById("dbMessage").innerHTML =
+            "makeblastdb command will be generated";
 
+        };
 
+    }
 
-let evalue =
-document.getElementById("evalue").value;
 
 
 
-let word =
-document.getElementById("wordsize").value;
 
 
+    // Generate command button
 
-let identity =
-document.getElementById("identity").value;
 
+    const generateButton =
+    document.getElementById("generateButton");
 
 
-let threads =
-document.getElementById("threads").value;
 
+    if(generateButton){
 
 
-let output =
-document.getElementById("outputName").value;
+        generateButton.onclick=function(){
 
+            generateBLAST();
 
+        };
 
-let extension =
-document.getElementById("outputType").value;
 
+    }
 
 
-let fields=[];
 
 
 
-document
-.querySelectorAll(".checkbox-grid input:checked")
-.forEach(function(item){
 
-fields.push(item.value);
+
+    // Help menu
+
+
+    const helpButton =
+    document.getElementById("helpButton");
+
+
+
+    if(helpButton){
+
+
+        helpButton.onclick=function(){
+
+
+            const help =
+            document.getElementById("helpContent");
+
+
+
+            if(help.style.display==="block"){
+
+
+                help.style.display="none";
+
+
+                helpButton.innerHTML =
+                "How to Run BLAST on Your Computer";
+
+
+            }
+
+            else{
+
+
+                help.style.display="block";
+
+
+                helpButton.innerHTML =
+                "Hide BLAST Instructions";
+
+
+            }
+
+
+        };
+
+
+    }
+
+
+
 
 });
 
@@ -130,27 +172,107 @@ fields.push(item.value);
 
 
 
-let outfmt="6";
 
-if(extension==="csv"){
 
-outfmt="10";
-
-}
+function generateBLAST(){
 
 
 
-
-
-let command="";
-
+    let blast =
+    document.getElementById("blastType").value;
 
 
 
-if(!databaseMade){
+    let query =
+    document.getElementById("queryPath").value;
 
 
-command +=
+
+    let db =
+    document.getElementById("dbPath").value;
+
+
+
+    let evalue =
+    document.getElementById("evalue").value;
+
+
+
+    let word =
+    document.getElementById("wordsize").value;
+
+
+
+    let identity =
+    document.getElementById("identity").value;
+
+
+
+    let threads =
+    document.getElementById("threads").value;
+
+
+
+    let output =
+    document.getElementById("outputName").value;
+
+
+
+    let extension =
+    document.getElementById("outputType").value;
+
+
+
+
+
+    // Collect output columns
+
+
+    let fields=[];
+
+
+
+    document
+    .querySelectorAll(".checkbox-grid input:checked")
+    .forEach(function(box){
+
+
+        fields.push(box.value);
+
+
+    });
+
+
+
+
+
+    let outfmt="6";
+
+
+
+    if(extension==="csv"){
+
+        outfmt="10";
+
+    }
+
+
+
+
+
+    let command="";
+
+
+
+
+
+    // Add database creation if needed
+
+
+    if(databaseMade===false){
+
+
+        command +=
 
 `makeblastdb \\
 -in "${db}.fasta" \\
@@ -160,14 +282,38 @@ command +=
 
 `;
 
-
-
-}
-
+    }
 
 
 
-command +=
+
+
+
+
+    // Multiple file warning
+
+
+    if(multiple){
+
+
+        command +=
+
+`# Multiple FASTA mode
+
+# Run this command for each FASTA file
+
+
+`;
+
+    }
+
+
+
+
+
+
+
+    command +=
 
 
 `${blast} \\
@@ -182,13 +328,12 @@ command +=
 
 
 
-document.getElementById("result").value =
-command;
 
 
 
-};
+    document.getElementById("result").value =
+    command;
 
 
 
-});
+}
