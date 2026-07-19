@@ -1,95 +1,143 @@
-let multiple=false;
-
-let databaseMade=true;
+let databaseMade = true;
 
 
 
-function setMultiple(value){
+document.addEventListener("DOMContentLoaded", function(){
 
-multiple=value;
 
+let multiple = false;
+
+
+
+document.getElementById("singleButton")
+.onclick=function(){
+
+multiple=false;
 
 document.getElementById("fileMode").innerHTML =
+"Single FASTA selected";
 
-value ?
-
-"Multiple FASTA files selected"
-
-:
-
-"Single FASTA file selected";
-
-}
+};
 
 
 
+document.getElementById("multipleButton")
+.onclick=function(){
 
-function setDB(value){
+multiple=true;
 
-databaseMade=value;
+document.getElementById("fileMode").innerHTML =
+"Multiple FASTA files selected";
 
+};
+
+
+
+
+
+document.getElementById("existingDB")
+.onclick=function(){
+
+databaseMade=true;
 
 document.getElementById("dbMessage").innerHTML =
+"Using existing BLAST database";
 
-value ?
-
-"Using existing BLAST database"
-
-:
-
-"makeblastdb will be included";
-
-}
+};
 
 
 
 
 
+document.getElementById("createDB")
+.onclick=function(){
 
-function generate(){
+databaseMade=false;
+
+document.getElementById("dbMessage").innerHTML =
+"makeblastdb command will be included";
+
+};
 
 
-let blast=document.getElementById("blastType").value;
 
-let query=document.getElementById("queryPath").value;
 
-let db=document.getElementById("dbPath").value;
 
-let evalue=document.getElementById("evalue").value;
 
-let word=document.getElementById("wordsize").value;
+document.getElementById("generateButton")
+.onclick=function(){
 
-let identity=document.getElementById("identity").value;
 
-let threads=document.getElementById("threads").value;
 
-let output=document.getElementById("outputName").value;
+let blast =
+document.getElementById("blastType").value;
 
-let extension=document.getElementById("outputType").value;
+
+
+let query =
+document.getElementById("queryPath").value;
+
+
+
+let db =
+document.getElementById("dbPath").value;
+
+
+
+let evalue =
+document.getElementById("evalue").value;
+
+
+
+let word =
+document.getElementById("wordsize").value;
+
+
+
+let identity =
+document.getElementById("identity").value;
+
+
+
+let threads =
+document.getElementById("threads").value;
+
+
+
+let output =
+document.getElementById("outputName").value;
+
+
+
+let extension =
+document.getElementById("outputType").value;
 
 
 
 let fields=[];
 
 
+
 document
 .querySelectorAll(".checkbox-grid input:checked")
-.forEach(x=>{
+.forEach(function(item){
 
-fields.push(x.value);
+fields.push(item.value);
 
 });
 
 
 
-let outfmt="6";
 
+
+let outfmt="6";
 
 if(extension==="csv"){
 
 outfmt="10";
 
 }
+
 
 
 
@@ -105,12 +153,14 @@ if(!databaseMade){
 command +=
 
 `makeblastdb \\
--in ${db}.fasta \\
+-in "${db}.fasta" \\
 -dbtype nucl \\
--out ${db}
+-out "${db}"
 
 
-\n\n`;
+`;
+
+
 
 }
 
@@ -132,7 +182,13 @@ command +=
 
 
 
-document.getElementById("result").value=command;
+document.getElementById("result").value =
+command;
 
 
-}
+
+};
+
+
+
+});
