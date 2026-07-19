@@ -3,25 +3,25 @@ let multiple = false;
 
 
 
-// Remove quotes only
-function removeQuotes(path){
+function cleanPath(path){
 
     if(!path){
         return "";
     }
 
+
     return path
         .trim()
-        .replace(/^"+|"+$/g, "");
+        .replace(/^"+|"+$/g,"");
 
 }
 
 
 
-// Add exactly one pair of quotes
-function quotePath(path){
 
-    return `"${removeQuotes(path)}"`;
+function quote(path){
+
+    return `"${cleanPath(path)}"`;
 
 }
 
@@ -34,126 +34,66 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-    /*
-        Query buttons
-    */
+document.getElementById("singleButton").onclick=function(){
 
+    multiple=false;
 
-    document.getElementById("singleButton").onclick=function(){
+    document.getElementById("fileMode").innerHTML =
+    "Single FASTA file selected";
 
-        multiple=false;
+};
 
-        document.getElementById("fileMode").innerHTML =
-        "Single FASTA file selected";
 
-    };
 
 
+document.getElementById("multipleButton").onclick=function(){
 
-    document.getElementById("multipleButton").onclick=function(){
+    multiple=true;
 
-        multiple=true;
+    document.getElementById("fileMode").innerHTML =
+    "Multiple FASTA files selected";
 
-        document.getElementById("fileMode").innerHTML =
-        "Multiple FASTA files selected";
+};
 
-    };
 
 
 
 
 
+document.getElementById("existingDB").onclick=function(){
 
+    databaseMade=true;
 
-    /*
-        Database buttons
-    */
+    document.getElementById("dbMessage").innerHTML =
+    "Using existing BLAST database";
 
+};
 
-    document.getElementById("existingDB").onclick=function(){
 
-        databaseMade=true;
 
-        document.getElementById("dbMessage").innerHTML =
-        "Using existing BLAST database";
 
-    };
 
 
+document.getElementById("createDB").onclick=function(){
 
+    databaseMade=false;
 
-    document.getElementById("createDB").onclick=function(){
+    document.getElementById("dbMessage").innerHTML =
+    "makeblastdb command will be generated";
 
-        databaseMade=false;
+};
 
-        document.getElementById("dbMessage").innerHTML =
-        "makeblastdb command will be generated";
 
-    };
 
 
 
 
+document.getElementById("generateButton").onclick=function(){
 
+    generateBLAST();
 
+};
 
-    /*
-        Help button
-    */
-
-
-    const helpButton =
-    document.getElementById("helpButton");
-
-
-    if(helpButton){
-
-
-        helpButton.onclick=function(){
-
-            const help =
-            document.getElementById("helpContent");
-
-
-            if(help.style.display==="block"){
-
-                help.style.display="none";
-
-                helpButton.innerHTML =
-                "How to Run BLAST on Your Computer";
-
-            }
-
-            else{
-
-                help.style.display="block";
-
-                helpButton.innerHTML =
-                "Collapse Instructions";
-
-            }
-
-
-        };
-
-    }
-
-
-
-
-
-
-
-    /*
-        Generate button
-    */
-
-
-    document.getElementById("generateButton").onclick=function(){
-
-        generateBLAST();
-
-    };
 
 
 });
@@ -170,120 +110,112 @@ function generateBLAST(){
 
 
 
-    // Raw paths (no quotes)
+let blast =
+document.getElementById("blastType").value;
 
-    let queryRaw =
-    removeQuotes(
-        document.getElementById("queryPath").value
-    );
 
 
-    let dbRaw =
-    removeQuotes(
-        document.getElementById("dbPath").value
-    );
+let query =
+cleanPath(
+document.getElementById("queryPath").value
+);
 
 
 
+let db =
+cleanPath(
+document.getElementById("dbPath").value
+);
 
-    let blast =
-    document.getElementById("blastType").value;
 
 
+let evalue =
+document.getElementById("evalue").value;
 
-    let evalue =
-    document.getElementById("evalue").value;
 
 
+let word =
+document.getElementById("wordsize").value;
 
-    let word =
-    document.getElementById("wordsize").value;
 
 
+let identity =
+document.getElementById("identity").value;
 
-    let identity =
-    document.getElementById("identity").value;
 
 
+let threads =
+document.getElementById("threads").value;
 
-    let threads =
-    document.getElementById("threads").value;
 
 
+let output =
+document.getElementById("outputName").value;
 
-    let output =
-    document.getElementById("outputName").value;
 
 
+let extension =
+document.getElementById("outputType").value;
 
-    let extension =
-    document.getElementById("outputType").value;
 
 
 
 
+let fields=[];
 
 
+document
+.querySelectorAll(".checkbox-grid input:checked")
+.forEach(function(box){
 
-    let fields=[];
+fields.push(box.value);
 
+});
 
 
-    document
-    .querySelectorAll(".checkbox-grid input:checked")
-    .forEach(function(box){
 
-        fields.push(box.value);
 
-    });
 
 
+let outfmt="6";
 
 
+if(extension==="csv"){
 
+    outfmt="10";
 
+}
 
-    let outfmt="6";
 
 
-    if(extension==="csv"){
 
-        outfmt="10";
 
-    }
 
 
+let command="";
 
 
 
 
-    let command="";
 
 
 
+// Create database if needed
 
+if(databaseMade===false){
 
 
-
-    /*
-        makeblastdb
-    */
-
-
-    if(databaseMade===false){
-
-
-        command +=
+command +=
 
 `makeblastdb \\
--in ${quotePath(dbRaw + ".fasta")} \\
+-in ${quote(db + ".fasta")} \\
 -dbtype nucl \\
--out ${quotePath(dbRaw)}
+-out ${quote(db)}
 
 
 \n\n`;
 
-    }
+}
 
 
 
@@ -291,52 +223,68 @@ function generateBLAST(){
 
 
 
-    /*
-        Multiple FASTA note
-    */
 
 
-    if(multiple){
+// MULTIPLE FASTA MODE
 
-
-        command +=
-
-`# Multiple FASTA mode
-# Repeat this command for each query file
-
-
-`;
-
-    }
+if(multiple){
 
 
 
+command +=
+
+`for file in *.fasta; do
+    ${blast} \\
+    -query "$file" \\
+    -db ${quote(db)} \\
+    -out "\${file%.fasta}_blast.${extension}" \\
+    -outfmt "${outfmt} ${fields.join(" ")}" \\
+    -word_size ${word} \\
+    -perc_identity ${identity} \\
+    -evalue ${evalue} \\
+    -num_threads ${threads}
+done`;
+
+
+
+}
 
 
 
 
-    /*
-        BLAST command
-    */
 
 
-    command +=
+
+// SINGLE FASTA MODE
+
+else{
+
+
+
+command +=
 
 `${blast} \\
--query ${quotePath(queryRaw)} \\
--db ${quotePath(dbRaw)} \\
+-query ${quote(query)} \\
+-db ${quote(db)} \\
 -out "${output}.${extension}" \\
 -outfmt "${outfmt} ${fields.join(" ")}" \\
--evalue ${evalue} \\
 -word_size ${word} \\
 -perc_identity ${identity} \\
+-evalue ${evalue} \\
 -num_threads ${threads}`;
 
 
 
+}
 
-    document.getElementById("result").value =
-    command;
+
+
+
+
+
+document.getElementById("result").value =
+command;
+
 
 
 }
