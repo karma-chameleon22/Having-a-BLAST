@@ -2,13 +2,47 @@ let databaseMade = true;
 let multiple = false;
 
 
-document.addEventListener("DOMContentLoaded", function () {
+/*
+    Removes existing quotes from user paths
+    and adds exactly one pair of quotes.
+*/
+function cleanPath(path){
+
+    if(!path){
+        return "";
+    }
 
 
-    // Query selection buttons
+    path = path.trim();
 
-    const singleButton = document.getElementById("singleButton");
-    const multipleButton = document.getElementById("multipleButton");
+
+    // Remove any existing quotation marks
+    path = path.replace(/^"+|"+$/g, "");
+
+
+    return `"${path}"`;
+
+}
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function(){
+
+
+
+    /*
+        Query mode buttons
+    */
+
+    const singleButton =
+    document.getElementById("singleButton");
+
+
+    const multipleButton =
+    document.getElementById("multipleButton");
+
 
 
     if(singleButton){
@@ -18,11 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
             multiple = false;
 
             document.getElementById("fileMode").innerHTML =
-            "Single FASTA selected";
+            "Single FASTA file selected";
 
         };
 
     }
+
+
 
 
 
@@ -42,7 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    // Database buttons
+
+
+
+    /*
+        Database buttons
+    */
 
 
     const existingDB =
@@ -54,11 +95,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
     if(existingDB){
 
-        existingDB.onclick=function(){
+        existingDB.onclick = function(){
 
-            databaseMade=true;
+            databaseMade = true;
 
             document.getElementById("dbMessage").innerHTML =
             "Using existing BLAST database";
@@ -70,11 +113,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
     if(createDB){
 
-        createDB.onclick=function(){
+        createDB.onclick = function(){
 
-            databaseMade=false;
+            databaseMade = false;
 
             document.getElementById("dbMessage").innerHTML =
             "makeblastdb command will be generated";
@@ -88,33 +132,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    // Generate command button
 
-
-    const generateButton =
-    document.getElementById("generateButton");
-
-
-
-    if(generateButton){
-
-
-        generateButton.onclick=function(){
-
-            generateBLAST();
-
-        };
-
-
-    }
-
-
-
-
-
-
-
-    // Help menu
+    /*
+        Help menu
+    */
 
 
     const helpButton =
@@ -133,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-            if(help.style.display==="block"){
+            if(help.style.display === "block"){
 
 
                 help.style.display="none";
@@ -166,7 +187,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+
+    /*
+        Generate BLAST command
+    */
+
+
+    const generateButton =
+    document.getElementById("generateButton");
+
+
+
+    if(generateButton){
+
+
+        generateButton.onclick=function(){
+
+            generateBLAST();
+
+        };
+
+
+    }
+
+
+
 });
+
+
 
 
 
@@ -183,13 +233,18 @@ function generateBLAST(){
 
 
 
+
     let query =
-    document.getElementById("queryPath").value;
+    cleanPath(
+        document.getElementById("queryPath").value
+    );
 
 
 
     let db =
-    document.getElementById("dbPath").value;
+    cleanPath(
+        document.getElementById("dbPath").value
+    );
 
 
 
@@ -225,7 +280,11 @@ function generateBLAST(){
 
 
 
-    // Collect output columns
+
+
+    /*
+        Collect selected BLAST output fields
+    */
 
 
     let fields=[];
@@ -246,15 +305,25 @@ function generateBLAST(){
 
 
 
+
+    /*
+        BLAST output format
+
+        6 = tabular
+        10 = CSV
+    */
+
+
     let outfmt="6";
 
 
-
-    if(extension==="csv"){
+    if(extension === "csv"){
 
         outfmt="10";
 
     }
+
+
 
 
 
@@ -266,18 +335,28 @@ function generateBLAST(){
 
 
 
-    // Add database creation if needed
 
 
-    if(databaseMade===false){
+    /*
+        Add makeblastdb if user does not already
+        have a formatted database
+    */
+
+
+    if(databaseMade === false){
+
+
+        let rawDB =
+        db.replace(/"/g,"");
+
 
 
         command +=
 
 `makeblastdb \\
--in "${db}.fasta" \\
+-in "${rawDB}.fasta" \\
 -dbtype nucl \\
--out "${db}"
+-out "${rawDB}"
 
 
 `;
@@ -290,7 +369,10 @@ function generateBLAST(){
 
 
 
-    // Multiple file warning
+
+    /*
+        Multiple FASTA reminder
+    */
 
 
     if(multiple){
@@ -299,8 +381,7 @@ function generateBLAST(){
         command +=
 
 `# Multiple FASTA mode
-
-# Run this command for each FASTA file
+# Run this command for each query file
 
 
 `;
@@ -313,12 +394,17 @@ function generateBLAST(){
 
 
 
+    /*
+        BLAST command
+    */
+
+
     command +=
 
 
 `${blast} \\
--query "${query}" \\
--db "${db}" \\
+-query ${query} \\
+-db ${db} \\
 -out "${output}.${extension}" \\
 -outfmt "${outfmt} ${fields.join(" ")}" \\
 -evalue ${evalue} \\
@@ -331,8 +417,10 @@ function generateBLAST(){
 
 
 
-    document.getElementById("result").value =
-    command;
+
+    document
+    .getElementById("result")
+    .value = command;
 
 
 
