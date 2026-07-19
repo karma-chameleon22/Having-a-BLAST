@@ -31,25 +31,21 @@ function(){
 
 
 
-const helpButton=
-document.getElementById("helpButton");
+let helpButton=document.getElementById("helpButton");
 
-
-const helpContent=
-document.getElementById("helpContent");
+let help=document.getElementById("helpContent");
 
 
 
 helpButton.onclick=function(){
 
 
-if(helpContent.style.display==="none"){
+if(help.style.display==="block"){
 
 
-helpContent.style.display="block";
+help.style.display="none";
 
-helpButton.innerHTML=
-"Collapse Instructions";
+helpButton.innerHTML="About BLAST";
 
 
 }
@@ -57,10 +53,9 @@ helpButton.innerHTML=
 else{
 
 
-helpContent.style.display="none";
+help.style.display="block";
 
-helpButton.innerHTML=
-"How to Run BLAST";
+helpButton.innerHTML="Collapse About BLAST";
 
 
 }
@@ -103,7 +98,6 @@ document.getElementById("fileMode").innerHTML=
 
 
 
-
 document.getElementById("existingDB").onclick=function(){
 
 createDatabase=false;
@@ -118,7 +112,6 @@ document.getElementById("dbMessage").innerHTML=
 
 
 
-
 document.getElementById("createDB").onclick=function(){
 
 createDatabase=true;
@@ -127,7 +120,6 @@ document.getElementById("dbMessage").innerHTML=
 "Creating database";
 
 };
-
 
 
 
@@ -149,33 +141,26 @@ generateBLAST;
 
 
 
+
 function generateBLAST(){
 
 
-let blast=
-document.getElementById("blastType").value;
+let blast=document.getElementById("blastType").value;
 
 
-
-let query=
-cleanPath(
+let query=cleanPath(
 document.getElementById("queryPath").value
 );
 
 
-
-let db=
-cleanPath(
+let db=cleanPath(
 document.getElementById("databasePath").value
 );
 
 
-
-let dbFasta=
-cleanPath(
+let dbFasta=cleanPath(
 document.getElementById("databaseFastaPath").value
 );
-
 
 
 
@@ -184,15 +169,12 @@ let fields=[];
 
 document
 .querySelectorAll(".checkbox-grid input:checked")
-.forEach(function(x){
-
-fields.push(x.value);
-
-});
+.forEach(x=>fields.push(x.value));
 
 
 
 let command="";
+
 
 
 
@@ -209,8 +191,6 @@ command+=
 \n\n`;
 
 }
-
-
 
 
 
@@ -252,13 +232,11 @@ command+=
 -evalue ${document.getElementById("evalue").value} \\
 -num_threads ${document.getElementById("threads").value}`;
 
-
 }
 
 
 
-document.getElementById("result").value=
-command;
+document.getElementById("result").value=command;
 
 
 }
