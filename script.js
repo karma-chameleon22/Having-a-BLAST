@@ -3,18 +3,17 @@ let createDatabase = false;
 
 
 
+// -----------------------------
+// PATH FUNCTIONS
+// -----------------------------
+
 function cleanPath(path) {
 
-    if (!path) {
-        return "";
-    }
+    if (!path) return "";
 
-    return path
-        .trim()
-        .replace(/^"+|"+$/g, "");
+    return path.trim().replace(/^"+|"+$/g, "");
 
 }
-
 
 
 
@@ -27,13 +26,110 @@ function quote(path) {
 
 
 
+function getPlatform() {
+
+    const selected =
+        document.querySelector('input[name="platform"]:checked');
+
+    return selected ? selected.value : "linux";
+
+}
 
 
-document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    // ABOUT COLLAPSE
+function convertPath(path, platform) {
+
+    path = cleanPath(path);
+
+
+    // Windows -> WSL
+
+    if (platform === "linux") {
+
+
+        if (/^[A-Za-z]:\\/.test(path)) {
+
+
+            const drive =
+                path[0].toLowerCase();
+
+
+            path =
+                "/mnt/" +
+                drive +
+                "/" +
+                path
+                .substring(3)
+                .replace(/\\/g, "/");
+
+        }
+
+    }
+
+
+
+    // WSL -> Windows
+
+    if (platform === "windows" || platform === "powershell") {
+
+
+        if (path.startsWith("/mnt/")) {
+
+
+            const drive =
+                path[5].toUpperCase();
+
+
+            path =
+                drive +
+                ":\\" +
+                path
+                .substring(7)
+                .replace(/\//g, "\\");
+
+        }
+
+    }
+
+
+    return path;
+
+}
+
+
+
+
+
+function getContinuation(platform) {
+
+
+    if (platform === "windows") return "^";
+
+    if (platform === "powershell") return "`";
+
+    return "\\";
+
+}
+
+
+
+
+
+
+
+
+
+// -----------------------------
+// PAGE EVENTS
+// -----------------------------
+
+document.addEventListener("DOMContentLoaded", function(){
+
+
+
+    // ABOUT BUTTON
 
     const aboutButton =
         document.getElementById("aboutButton");
@@ -47,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    aboutButton.addEventListener("click", function () {
+    aboutButton.onclick = function(){
 
 
         if (aboutContent.style.display === "none") {
@@ -59,7 +155,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Collapse About BLAST";
 
 
-        } else {
+        }
+
+        else {
 
 
             aboutContent.style.display = "none";
@@ -70,7 +168,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-    });
+    };
+
 
 
 
@@ -80,41 +179,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // FASTA MODE
 
 
-    document
-    .getElementById("singleButton")
-    .addEventListener("click", function(){
-
+    document.getElementById("singleButton").onclick = function(){
 
         multipleFiles = false;
 
-
         document.getElementById("fileMode").innerHTML =
-        "Single FASTA selected";
+            "Single FASTA selected";
 
-
-    });
-
+    };
 
 
 
 
 
-    document
-    .getElementById("multipleButton")
-    .addEventListener("click", function(){
-
+    document.getElementById("multipleButton").onclick = function(){
 
         multipleFiles = true;
 
-
         document.getElementById("fileMode").innerHTML =
-        "Multiple FASTA selected";
+            "Multiple FASTA selected";
 
-
-    });
-
-
-
+    };
 
 
 
@@ -124,38 +209,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // DATABASE MODE
 
 
-    document
-    .getElementById("existingDB")
-    .addEventListener("click", function(){
-
+    document.getElementById("existingDB").onclick = function(){
 
         createDatabase = false;
 
-
         document.getElementById("dbMessage").innerHTML =
-        "Using existing BLAST database";
+            "Using existing BLAST database";
 
-
-    });
-
+    };
 
 
 
 
 
-    document
-    .getElementById("createDB")
-    .addEventListener("click", function(){
-
+    document.getElementById("createDB").onclick = function(){
 
         createDatabase = true;
 
-
         document.getElementById("dbMessage").innerHTML =
-        "Creating new BLAST database";
+            "Creating new BLAST database";
 
-
-    });
+    };
 
 
 
@@ -165,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document
     .getElementById("generateButton")
-    .addEventListener("click", generateBLAST);
+    .onclick = generateBLAST;
 
 
 
@@ -179,226 +253,85 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-function getPlatform(){
-
-
-    let selected =
-    document.querySelector(
-        'input[name="platform"]:checked'
-    );
-
-
-    return selected ? selected.value : "linux";
-
-
-}
-
-
-
-
-
-
-
-
-
-function convertPath(path, platform){
-
-
-    path = cleanPath(path);
-
-
-
-    // WINDOWS PATH --> WSL PATH
-
-    if(platform === "linux"){
-
-
-
-        if(/^[A-Za-z]:\\/.test(path)){
-
-
-
-            let drive =
-            path[0].toLowerCase();
-
-
-
-            path =
-            "/mnt/" +
-            drive +
-            "/" +
-            path
-            .substring(3)
-            .replace(/\\/g,"/");
-
-
-        }
-
-
-    }
-
-
-
-
-
-
-    // WSL PATH --> WINDOWS PATH
-
-
-    if(platform === "windows" || platform === "powershell"){
-
-
-
-        if(path.startsWith("/mnt/")){
-
-
-            let drive =
-            path[5].toUpperCase();
-
-
-
-            path =
-            drive +
-            ":\\" +
-            path
-            .substring(7)
-            .replace(/\//g,"\\");
-
-
-        }
-
-
-    }
-
-
-
-
-    return path;
-
-
-}
-
-
-
-
-
-
-
-
-
-function continuation(platform){
-
-
-    if(platform === "windows"){
-
-        return "^";
-
-    }
-
-
-
-    if(platform === "powershell"){
-
-        return "`";
-
-    }
-
-
-
-    return "\\";
-
-
-}
-
-
-
-
-
-
-
-
+// -----------------------------
+// COMMAND GENERATOR
+// -----------------------------
 
 function generateBLAST(){
 
 
 
     const platform =
-    getPlatform();
+        getPlatform();
 
 
-
-    const line =
-    continuation(platform);
+    const continuation =
+        getContinuation(platform);
 
 
 
 
     const blastType =
-    document.getElementById("blastType").value;
+        document.getElementById("blastType").value;
 
 
 
 
-
-
-    const queryPath =
-    convertPath(
-        document.getElementById("queryPath").value,
-        platform
-    );
-
-
+    const query =
+        quote(
+            convertPath(
+                document.getElementById("queryPath").value,
+                platform
+            )
+        );
 
 
 
-    const databasePath =
-    convertPath(
-        document.getElementById("databasePath").value,
-        platform
-    );
-
-
+    const database =
+        quote(
+            convertPath(
+                document.getElementById("databasePath").value,
+                platform
+            )
+        );
 
 
 
     const databaseFasta =
-    convertPath(
-        document.getElementById("databaseFastaPath").value,
-        platform
-    );
-
+        quote(
+            convertPath(
+                document.getElementById("databaseFastaPath").value,
+                platform
+            )
+        );
 
 
 
 
     const evalue =
-    document.getElementById("evalue").value;
-
+        document.getElementById("evalue").value;
 
 
     const wordSize =
-    document.getElementById("wordsize").value;
-
+        document.getElementById("wordsize").value;
 
 
     const identity =
-    document.getElementById("identity").value;
-
+        document.getElementById("identity").value;
 
 
     const threads =
-    document.getElementById("threads").value;
-
+        document.getElementById("threads").value;
 
 
 
     const outputName =
-    document.getElementById("outputName").value;
+        document.getElementById("outputName").value;
 
 
 
     const outputType =
-    document.getElementById("outputType").value;
+        document.getElementById("outputType").value;
 
 
 
@@ -408,19 +341,13 @@ function generateBLAST(){
     let fields = [];
 
 
-
     document
     .querySelectorAll(".checkbox-grid input:checked")
-    .forEach(function(box){
-
+    .forEach(box => {
 
         fields.push(box.value);
 
-
     });
-
-
-
 
 
 
@@ -433,30 +360,21 @@ function generateBLAST(){
 
 
 
-
-    // DATABASE CREATION
-
+    // MAKEBLASTDB
 
     if(createDatabase){
 
 
-
         command +=
-
-`makeblastdb ${line}
--in ${quote(databaseFasta)} ${line}
--dbtype nucl ${line}
--out ${quote(databasePath)}
+`makeblastdb ${continuation}
+-in ${databaseFasta} ${continuation}
+-dbtype nucl ${continuation}
+-out ${database}
 
 
 `;
 
-
-
     }
-
-
-
 
 
 
@@ -473,18 +391,14 @@ function generateBLAST(){
 
 
 
-
-
         if(platform === "linux"){
 
 
-
 command +=
-
 `for file in *.fasta; do
     ${blastType} \\
     -query "$file" \\
-    -db ${quote(databasePath)} \\
+    -db ${database} \\
     -out "\${file%.fasta}_blast.${outputType}" \\
     -outfmt "6 ${fields.join(" ")}" \\
     -word_size ${wordSize} \\
@@ -493,26 +407,18 @@ command +=
     -num_threads ${threads}
 done`;
 
-
-
         }
-
-
-
-
 
 
 
         else if(platform === "windows"){
 
 
-
 command +=
-
 `for %f in (*.fasta) do (
     ${blastType} ^
     -query "%f" ^
-    -db ${quote(databasePath)} ^
+    -db ${database} ^
     -out "%~nf_blast.${outputType}" ^
     -outfmt "6 ${fields.join(" ")}" ^
     -word_size ${wordSize} ^
@@ -521,47 +427,30 @@ command +=
     -num_threads ${threads}
 )`;
 
-
         }
-
-
-
-
-
-
 
 
 
         else {
 
 
-
 command +=
-
 `Get-ChildItem *.fasta | ForEach-Object {
-
-${blastType} `
+    ${blastType} `
 -query $_.FullName `
--db ${quote(databasePath)} `
+-db ${database} `
 -out "$($_.BaseName)_blast.${outputType}" `
 -outfmt "6 ${fields.join(" ")}" `
 -word_size ${wordSize} `
 -perc_identity ${identity} `
 -evalue ${evalue} `
 -num_threads ${threads}
-
 }`;
-
 
         }
 
 
-
     }
-
-
-
-
 
 
 
@@ -579,22 +468,18 @@ ${blastType} `
 
 
 command +=
-
-`${blastType} ${line}
--query ${quote(queryPath)} ${line}
--db ${quote(databasePath)} ${line}
--out "${outputName}.${outputType}" ${line}
--outfmt "6 ${fields.join(" ")}" ${line}
--word_size ${wordSize} ${line}
--perc_identity ${identity} ${line}
--evalue ${evalue} ${line}
+`${blastType} ${continuation}
+-query ${query} ${continuation}
+-db ${database} ${continuation}
+-out "${outputName}.${outputType}" ${continuation}
+-outfmt "6 ${fields.join(" ")}" ${continuation}
+-word_size ${wordSize} ${continuation}
+-perc_identity ${identity} ${continuation}
+-evalue ${evalue} ${continuation}
 -num_threads ${threads}`;
 
 
-
     }
-
-
 
 
 
