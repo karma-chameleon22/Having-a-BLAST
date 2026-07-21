@@ -22,7 +22,7 @@
 <h1>BLAST Prompt Generator</h1>
 
 <p class="subtitle">
-Generate BLAST commands automatically
+Generate BLAST+ commands automatically
 </p>
 
 
@@ -33,55 +33,25 @@ Generate BLAST commands automatically
 
 <div class="section">
 
-
 <h2>Operating System</h2>
 
 
-<p>
-Select where BLAST will be executed.
-</p>
-
-
-<div class="radio-options">
-
-
 <label>
-<input 
-type="radio"
-name="platform"
-value="linux"
-checked>
-
+<input type="radio" name="platform" value="linux" checked>
 Linux / WSL
-
 </label>
 
 
-
 <label>
-<input 
-type="radio"
-name="platform"
-value="windows">
-
+<input type="radio" name="platform" value="windows">
 Windows Command Prompt
-
 </label>
-
 
 
 <label>
-<input 
-type="radio"
-name="platform"
-value="powershell">
-
+<input type="radio" name="platform" value="powershell">
 Windows PowerShell
-
 </label>
-
-
-</div>
 
 
 </div>
@@ -100,20 +70,19 @@ About BLAST
 </button>
 
 
-
-<div id="aboutContent">
+<div id="aboutContent" style="display:none;">
 
 
 <h2>How to Run BLAST</h2>
 
 
 <p>
-This tool creates command-line BLAST+ commands.
+This generator creates commands for NCBI BLAST+.
 </p>
 
 
 <p>
-First verify BLAST is installed:
+Check BLAST installation:
 </p>
 
 
@@ -127,11 +96,6 @@ blastn -version
 <h3>Create a BLAST Database</h3>
 
 
-<p>
-Linux / WSL:
-</p>
-
-
 <pre>
 makeblastdb \
 -in genome.fasta \
@@ -141,93 +105,51 @@ makeblastdb \
 
 
 
-<p>
-Windows Command Prompt:
-</p>
 
-
-<pre>
-makeblastdb ^
--in genome.fasta ^
--dbtype nucl ^
--out genome_DB
-</pre>
-
+<h2>Parameter Information</h2>
 
 
 <p>
-PowerShell:
-</p>
-
-
-<pre>
-makeblastdb `
--in genome.fasta `
--dbtype nucl `
--out genome_DB
-</pre>
-
-
-
-
-
-<h2>BLAST Parameters</h2>
-
-
-<p>
-<b>E-value:</b>
-Determines statistical significance. Lower values are stricter.
+<strong>E-value:</strong>
+Controls statistical significance. Lower values are stricter.
 </p>
 
 
 <p>
-<b>Word Size:</b>
-Controls initial matching seed size.
+<strong>Word Size:</strong>
+Controls initial matching length. Smaller values increase sensitivity.
 </p>
 
 
 <p>
-<b>Percent Identity:</b>
+<strong>Percent Identity:</strong>
 Controls sequence similarity requirement.
 </p>
 
 
 <p>
-<b>CPU Threads:</b>
-Controls processor usage.
+<strong>CPU Threads:</strong>
+Controls how many processor cores BLAST uses.
 </p>
 
 
 
 
-
-<h2>Output Fields</h2>
+<h2>Output Columns</h2>
 
 
 <p>
-
-<b>qseqid</b> - Query sequence ID<br>
-
-<b>sseqid</b> - Subject/database sequence ID<br>
-
-<b>pident</b> - Percent identity<br>
-
-<b>length</b> - Alignment length<br>
-
-<b>mismatch</b> - Number of mismatches<br>
-
-<b>gapopen</b> - Number of gaps<br>
-
-<b>qstart/qend</b> - Query coordinates<br>
-
-<b>sstart/send</b> - Subject coordinates<br>
-
-<b>evalue</b> - Statistical significance<br>
-
-<b>bitscore</b> - Alignment score<br>
-
-<b>qseq/sseq</b> - Aligned sequences
-
+<strong>qseqid</strong> - Query ID<br>
+<strong>sseqid</strong> - Subject ID<br>
+<strong>pident</strong> - Percent identity<br>
+<strong>length</strong> - Alignment length<br>
+<strong>mismatch</strong> - Number of mismatches<br>
+<strong>gapopen</strong> - Gap openings<br>
+<strong>qstart/qend</strong> - Query coordinates<br>
+<strong>sstart/send</strong> - Subject coordinates<br>
+<strong>evalue</strong> - Statistical significance<br>
+<strong>bitscore</strong> - Alignment score<br>
+<strong>qseq/sseq</strong> - Aligned sequences
 </p>
 
 
@@ -241,11 +163,10 @@ Controls processor usage.
 
 
 
+
 <!-- BLAST TYPE -->
 
-
 <div class="section">
-
 
 <h2>BLAST Type</h2>
 
@@ -288,7 +209,6 @@ blastp
 <h2>Query FASTA</h2>
 
 
-
 <button id="singleButton">
 Single FASTA
 </button>
@@ -299,11 +219,9 @@ Multiple FASTA
 </button>
 
 
-
 <p id="fileMode">
 Select FASTA mode
 </p>
-
 
 
 
@@ -312,9 +230,10 @@ Query FASTA Path
 </label>
 
 
-<input
+<input 
 id="queryPath"
 placeholder="D:\Queries\sample.fasta">
+
 
 
 </div>
@@ -329,7 +248,6 @@ placeholder="D:\Queries\sample.fasta">
 
 <!-- DATABASE -->
 
-
 <div class="section">
 
 
@@ -340,14 +258,13 @@ placeholder="D:\Queries\sample.fasta">
 <label>
 Database FASTA File
 <br>
-(Only required when creating database)
+(Only required when creating a database)
 </label>
 
 
 <input
 id="databaseFastaPath"
 placeholder="D:\Database\genome.fasta">
-
 
 
 
@@ -378,10 +295,10 @@ Create Database
 
 
 
-
 <p id="dbMessage">
 Select database option
 </p>
+
 
 
 </div>
@@ -396,21 +313,22 @@ Select database option
 
 <!-- PARAMETERS -->
 
-
 <div class="section">
 
 
 <h2>BLAST Parameters</h2>
 
 
+
 <label>
 E-value
 </label>
 
-
-<input
+<input 
 id="evalue"
 value="1e-7">
+
+
 
 
 
@@ -418,10 +336,11 @@ value="1e-7">
 Word Size
 </label>
 
-
 <input
 id="wordsize"
 value="7">
+
+
 
 
 
@@ -429,10 +348,11 @@ value="7">
 Percent Identity
 </label>
 
-
 <input
 id="identity"
 value="100">
+
+
 
 
 
@@ -440,10 +360,10 @@ value="100">
 CPU Threads
 </label>
 
-
 <input
 id="threads"
 value="8">
+
 
 
 </div>
@@ -458,7 +378,6 @@ value="8">
 
 <!-- OUTPUT -->
 
-
 <div class="section">
 
 
@@ -469,33 +388,90 @@ value="8">
 <div class="checkbox-grid">
 
 
-<label><input type="checkbox" value="qseqid" checked> qseqid</label>
 
-<label><input type="checkbox" value="sseqid" checked> sseqid</label>
+<label>
+<input type="checkbox" value="qseqid" checked>
+qseqid
+</label>
 
-<label><input type="checkbox" value="pident" checked> pident</label>
 
-<label><input type="checkbox" value="length" checked> length</label>
+<label>
+<input type="checkbox" value="sseqid" checked>
+sseqid
+</label>
 
-<label><input type="checkbox" value="mismatch"> mismatch</label>
 
-<label><input type="checkbox" value="gapopen"> gapopen</label>
+<label>
+<input type="checkbox" value="pident" checked>
+pident
+</label>
 
-<label><input type="checkbox" value="qstart"> qstart</label>
 
-<label><input type="checkbox" value="qend"> qend</label>
+<label>
+<input type="checkbox" value="length" checked>
+length
+</label>
 
-<label><input type="checkbox" value="sstart"> sstart</label>
 
-<label><input type="checkbox" value="send"> send</label>
+<label>
+<input type="checkbox" value="mismatch">
+mismatch
+</label>
 
-<label><input type="checkbox" value="evalue" checked> evalue</label>
 
-<label><input type="checkbox" value="bitscore" checked> bitscore</label>
+<label>
+<input type="checkbox" value="gapopen">
+gapopen
+</label>
 
-<label><input type="checkbox" value="qseq"> qseq</label>
 
-<label><input type="checkbox" value="sseq"> sseq</label>
+<label>
+<input type="checkbox" value="qstart">
+qstart
+</label>
+
+
+<label>
+<input type="checkbox" value="qend">
+qend
+</label>
+
+
+<label>
+<input type="checkbox" value="sstart">
+sstart
+</label>
+
+
+<label>
+<input type="checkbox" value="send">
+send
+</label>
+
+
+<label>
+<input type="checkbox" value="evalue" checked>
+evalue
+</label>
+
+
+<label>
+<input type="checkbox" value="bitscore" checked>
+bitscore
+</label>
+
+
+<label>
+<input type="checkbox" value="qseq">
+qseq
+</label>
+
+
+<label>
+<input type="checkbox" value="sseq">
+sseq
+</label>
+
 
 
 </div>
@@ -513,12 +489,10 @@ value="8">
 
 <!-- GENERATOR -->
 
-
 <div class="section">
 
 
 <h2>Generate Command</h2>
-
 
 
 <label>
@@ -545,6 +519,7 @@ Output Format
 TSV
 </option>
 
+
 <option value="csv">
 CSV
 </option>
@@ -570,21 +545,25 @@ placeholder="Your BLAST command will appear here">
 </textarea>
 
 
+
+</div>
+
+
+
+
+
+
+
 </div>
 
 
 
-
-
-
-
-
-</div>
 
 
 <script src="script.js"></script>
 
 
 </body>
+
 
 </html>
