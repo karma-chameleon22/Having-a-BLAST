@@ -1,3 +1,4 @@
+alert("BLAST script loaded");
 let multipleFiles = false;
 let createDatabase = false;
 
