@@ -1,5 +1,4 @@
 let multipleFiles = false;
-
 let createDatabase = false;
 
 
@@ -18,6 +17,7 @@ function cleanPath(path) {
 
 
 
+
 function quote(path) {
 
     return `"${cleanPath(path)}"`;
@@ -28,8 +28,12 @@ function quote(path) {
 
 
 
+
 document.addEventListener("DOMContentLoaded", function () {
 
+
+
+    // ABOUT COLLAPSE
 
     const aboutButton =
         document.getElementById("aboutButton");
@@ -37,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const aboutContent =
         document.getElementById("aboutContent");
-
 
 
     aboutContent.style.display = "none";
@@ -64,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
             aboutButton.innerHTML =
                 "About BLAST";
 
-
         }
 
 
@@ -72,6 +74,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+
+    // FASTA MODE
 
 
     document
@@ -114,6 +120,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+    // DATABASE MODE
+
+
     document
     .getElementById("existingDB")
     .addEventListener("click", function(){
@@ -127,8 +137,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     });
-
-
 
 
 
@@ -170,7 +178,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
 function getPlatform(){
+
 
     let selected =
     document.querySelector(
@@ -179,6 +189,7 @@ function getPlatform(){
 
 
     return selected ? selected.value : "linux";
+
 
 }
 
@@ -189,20 +200,27 @@ function getPlatform(){
 
 
 
+
 function convertPath(path, platform){
+
 
     path = cleanPath(path);
 
 
 
+    // WINDOWS PATH --> WSL PATH
+
     if(platform === "linux"){
+
 
 
         if(/^[A-Za-z]:\\/.test(path)){
 
 
+
             let drive =
             path[0].toLowerCase();
+
 
 
             path =
@@ -223,7 +241,12 @@ function convertPath(path, platform){
 
 
 
+
+    // WSL PATH --> WINDOWS PATH
+
+
     if(platform === "windows" || platform === "powershell"){
+
 
 
         if(path.startsWith("/mnt/")){
@@ -231,6 +254,7 @@ function convertPath(path, platform){
 
             let drive =
             path[5].toUpperCase();
+
 
 
             path =
@@ -248,7 +272,9 @@ function convertPath(path, platform){
 
 
 
+
     return path;
+
 
 }
 
@@ -259,7 +285,8 @@ function convertPath(path, platform){
 
 
 
-function lineBreak(platform){
+
+function continuation(platform){
 
 
     if(platform === "windows"){
@@ -269,6 +296,7 @@ function lineBreak(platform){
     }
 
 
+
     if(platform === "powershell"){
 
         return "`";
@@ -276,7 +304,9 @@ function lineBreak(platform){
     }
 
 
+
     return "\\";
+
 
 }
 
@@ -291,20 +321,21 @@ function lineBreak(platform){
 function generateBLAST(){
 
 
+
     const platform =
     getPlatform();
 
 
 
-    const continuation =
-    lineBreak(platform);
-
+    const line =
+    continuation(platform);
 
 
 
 
     const blastType =
     document.getElementById("blastType").value;
+
 
 
 
@@ -360,6 +391,7 @@ function generateBLAST(){
 
 
 
+
     const outputName =
     document.getElementById("outputName").value;
 
@@ -392,7 +424,6 @@ function generateBLAST(){
 
 
 
-
     let command = "";
 
 
@@ -403,24 +434,28 @@ function generateBLAST(){
 
 
 
-
-    // MAKEBLASTDB
+    // DATABASE CREATION
 
 
     if(createDatabase){
 
 
+
         command +=
 
-`makeblastdb ${continuation}
--in ${quote(databaseFasta)} ${continuation}
--dbtype nucl ${continuation}
+`makeblastdb ${line}
+-in ${quote(databaseFasta)} ${line}
+-dbtype nucl ${line}
 -out ${quote(databasePath)}
 
 
 `;
 
+
+
     }
+
+
 
 
 
@@ -438,7 +473,10 @@ function generateBLAST(){
 
 
 
+
+
         if(platform === "linux"){
+
 
 
 command +=
@@ -464,7 +502,9 @@ done`;
 
 
 
+
         else if(platform === "windows"){
+
 
 
 command +=
@@ -490,7 +530,10 @@ command +=
 
 
 
+
+
         else {
+
 
 
 command +=
@@ -524,6 +567,10 @@ ${blastType} `
 
 
 
+
+
+
+
     // SINGLE FASTA
 
 
@@ -531,16 +578,16 @@ ${blastType} `
 
 
 
-        command +=
+command +=
 
-`${blastType} ${continuation}
--query ${quote(queryPath)} ${continuation}
--db ${quote(databasePath)} ${continuation}
--out "${outputName}.${outputType}" ${continuation}
--outfmt "6 ${fields.join(" ")}" ${continuation}
--word_size ${wordSize} ${continuation}
--perc_identity ${identity} ${continuation}
--evalue ${evalue} ${continuation}
+`${blastType} ${line}
+-query ${quote(queryPath)} ${line}
+-db ${quote(databasePath)} ${line}
+-out "${outputName}.${outputType}" ${line}
+-outfmt "6 ${fields.join(" ")}" ${line}
+-word_size ${wordSize} ${line}
+-perc_identity ${identity} ${line}
+-evalue ${evalue} ${line}
 -num_threads ${threads}`;
 
 
