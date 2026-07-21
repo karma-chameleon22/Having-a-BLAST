@@ -188,7 +188,117 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+function getPlatform(){
 
+    let selected =
+    document.querySelector(
+        'input[name="platform"]:checked'
+    );
+
+
+    return selected ? selected.value : "linux";
+
+}
+
+
+
+
+
+
+function convertPath(path, platform){
+
+    path = cleanPath(path);
+
+
+    if(platform === "linux"){
+
+
+        // Convert D:\folder\file
+        // into /mnt/d/folder/file
+
+
+        if(/^[A-Za-z]:\\/.test(path)){
+
+
+            let drive =
+            path[0].toLowerCase();
+
+
+            path =
+            "/mnt/" +
+            drive +
+            "/" +
+            path
+            .substring(3)
+            .replace(/\\/g,"/");
+
+
+        }
+
+
+    }
+
+
+
+    if(platform === "windows"){
+
+
+        // Convert /mnt/d/folder/file
+        // into D:\folder\file
+
+
+        if(path.startsWith("/mnt/")){
+
+
+            let drive =
+            path[5].toUpperCase();
+
+
+            path =
+            drive +
+            ":\\" +
+            path
+            .substring(7)
+            .replace(/\//g,"\\");
+
+
+        }
+
+
+    }
+
+
+
+    return path;
+
+}
+
+
+
+
+
+
+function lineBreak(platform){
+
+
+    if(platform === "windows"){
+
+        return "^";
+
+    }
+
+
+    if(platform === "powershell"){
+
+        return "`";
+
+    }
+
+
+    return "\\";
+
+
+}
 
 
 
