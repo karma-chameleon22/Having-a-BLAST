@@ -31,9 +31,6 @@ function quote(path) {
 document.addEventListener("DOMContentLoaded", function () {
 
 
-    // ABOUT BLAST COLLAPSE
-
-
     const aboutButton =
         document.getElementById("aboutButton");
 
@@ -42,8 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("aboutContent");
 
 
-
-    // Always start collapsed
 
     aboutContent.style.display = "none";
 
@@ -79,10 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-    // SINGLE FASTA
-
-
     document
     .getElementById("singleButton")
     .addEventListener("click", function(){
@@ -100,10 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-
-    // MULTIPLE FASTA
 
 
     document
@@ -127,9 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    // EXISTING DATABASE
-
-
     document
     .getElementById("existingDB")
     .addEventListener("click", function(){
@@ -149,9 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-    // CREATE DATABASE
 
 
     document
@@ -174,10 +155,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-    // GENERATE
-
-
     document
     .getElementById("generateButton")
     .addEventListener("click", generateBLAST);
@@ -185,6 +162,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 });
+
+
+
+
+
 
 
 
@@ -205,16 +187,15 @@ function getPlatform(){
 
 
 
+
+
 function convertPath(path, platform){
 
     path = cleanPath(path);
 
 
+
     if(platform === "linux"){
-
-
-        // Convert D:\folder\file
-        // into /mnt/d/folder/file
 
 
         if(/^[A-Za-z]:\\/.test(path)){
@@ -240,11 +221,9 @@ function convertPath(path, platform){
 
 
 
-    if(platform === "windows"){
 
 
-        // Convert /mnt/d/folder/file
-        // into D:\folder\file
+    if(platform === "windows" || platform === "powershell"){
 
 
         if(path.startsWith("/mnt/")){
@@ -278,6 +257,8 @@ function convertPath(path, platform){
 
 
 
+
+
 function lineBreak(platform){
 
 
@@ -297,8 +278,11 @@ function lineBreak(platform){
 
     return "\\";
 
-
 }
+
+
+
+
 
 
 
@@ -307,30 +291,52 @@ function lineBreak(platform){
 function generateBLAST(){
 
 
+    const platform =
+    getPlatform();
+
+
+
+    const continuation =
+    lineBreak(platform);
+
+
+
+
 
     const blastType =
     document.getElementById("blastType").value;
 
 
 
+
+
     const queryPath =
-    cleanPath(
-        document.getElementById("queryPath").value
+    convertPath(
+        document.getElementById("queryPath").value,
+        platform
     );
+
+
 
 
 
     const databasePath =
-    cleanPath(
-        document.getElementById("databasePath").value
+    convertPath(
+        document.getElementById("databasePath").value,
+        platform
     );
+
+
 
 
 
     const databaseFasta =
-    cleanPath(
-        document.getElementById("databaseFastaPath").value
+    convertPath(
+        document.getElementById("databaseFastaPath").value,
+        platform
     );
+
+
 
 
 
@@ -366,6 +372,7 @@ function generateBLAST(){
 
 
 
+
     let fields = [];
 
 
@@ -395,7 +402,9 @@ function generateBLAST(){
 
 
 
-    // CREATE DATABASE
+
+
+    // MAKEBLASTDB
 
 
     if(createDatabase){
@@ -403,9 +412,9 @@ function generateBLAST(){
 
         command +=
 
-`makeblastdb \\
--in ${quote(databaseFasta)} \\
--dbtype nucl \\
+`makeblastdb ${continuation}
+-in ${quote(databaseFasta)} ${continuation}
+-dbtype nucl ${continuation}
 -out ${quote(databasePath)}
 
 
@@ -421,13 +430,18 @@ function generateBLAST(){
 
 
 
+
     // MULTIPLE FASTA
 
 
     if(multipleFiles){
 
 
-        command +=
+
+        if(platform === "linux"){
+
+
+command +=
 
 `for file in *.fasta; do
     ${blastType} \\
@@ -443,7 +457,65 @@ done`;
 
 
 
+        }
+
+
+
+
+
+
+        else if(platform === "windows"){
+
+
+command +=
+
+`for %f in (*.fasta) do (
+    ${blastType} ^
+    -query "%f" ^
+    -db ${quote(databasePath)} ^
+    -out "%~nf_blast.${outputType}" ^
+    -outfmt "6 ${fields.join(" ")}" ^
+    -word_size ${wordSize} ^
+    -perc_identity ${identity} ^
+    -evalue ${evalue} ^
+    -num_threads ${threads}
+)`;
+
+
+        }
+
+
+
+
+
+
+
+        else {
+
+
+command +=
+
+`Get-ChildItem *.fasta | ForEach-Object {
+
+${blastType} `
+-query $_.FullName `
+-db ${quote(databasePath)} `
+-out "$($_.BaseName)_blast.${outputType}" `
+-outfmt "6 ${fields.join(" ")}" `
+-word_size ${wordSize} `
+-perc_identity ${identity} `
+-evalue ${evalue} `
+-num_threads ${threads}
+
+}`;
+
+
+        }
+
+
+
     }
+
 
 
 
@@ -458,19 +530,23 @@ done`;
     else {
 
 
+
         command +=
 
-`${blastType} \\
--query ${quote(queryPath)} \\
--db ${quote(databasePath)} \\
--out "${outputName}.${outputType}" \\
--outfmt "6 ${fields.join(" ")}" \\
--word_size ${wordSize} \\
--perc_identity ${identity} \\
--evalue ${evalue} \\
+`${blastType} ${continuation}
+-query ${quote(queryPath)} ${continuation}
+-db ${quote(databasePath)} ${continuation}
+-out "${outputName}.${outputType}" ${continuation}
+-outfmt "6 ${fields.join(" ")}" ${continuation}
+-word_size ${wordSize} ${continuation}
+-perc_identity ${identity} ${continuation}
+-evalue ${evalue} ${continuation}
 -num_threads ${threads}`;
 
+
+
     }
+
 
 
 
@@ -481,6 +557,7 @@ done`;
     document
     .getElementById("result")
     .value = command;
+
 
 
 }
